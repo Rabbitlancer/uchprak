@@ -1,0 +1,16 @@
+   //список инцидентности орграфа (в глоб области видимости)
+    private ArrayList<Integer> Graph[];
+
+private ArrayList[] Transpose(){  // метод транспонирования
+        GraphT = new ArrayList[numV];
+        for (int i = 0; i < numV; ++i) {
+            GraphT[i] = new ArrayList<Integer>();       //создали транспонированный граф (пустой)
+        }
+        for (int i = 0; i < numE; ++i) {    //проходим по всем спискам
+            for (int j=0;j<Graph[i].size();++j) {   //проходим по всем элементам одного (текущего)списка
+                int v = Graph[i].get(j);
+                GraphT[v].add(i);       //добавляем обратную дугу в транспонированный граф
+            }
+        }
+        return GraphT;
+    }
