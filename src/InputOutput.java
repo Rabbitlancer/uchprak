@@ -20,12 +20,11 @@ public class InputOutput {
     //список инцидентности орграфа
     private ArrayList<Integer> Graph[];
     private int[] component; //массив компонент сильной связности графа
-
     int componentNum; //количество компонент связности в орграфе
 
 
     //ввод данных с консоли
-    public void getData(ArrayList[] Graph) throws IOException {//передаем ссылку на граф, в который надо считать данные,
+    public ArrayList[] getData(ArrayList<Integer>[] Graph) throws IOException {//передаем ссылку на граф, в который надо считать данные,
         cin = new BufferedReader(new InputStreamReader(System.in));
         cout = new PrintWriter(System.out);
 
@@ -47,6 +46,7 @@ public class InputOutput {
             w--;
             Graph[v].add(w);
         }
+        return Graph;
     }
 
     //вывод результата.   передаем в метод кол-во компонент связности, кол-во вершин, массив компонет сявзности - данные, которые надо вывести
@@ -54,7 +54,9 @@ public class InputOutput {
 
         cout.println(componentNum);
         for (int i = 0; i < numV; ++i) {
-            cout.print((component[i] + 1) + " ");
+            //РАЗОБРАТЬСЯ, ПОЧЕМУ НЕ ВЫВОДИТ КОМПОНЕНТЫ СВЯЗНОСТИ!!! (проблема с передачей массива component)
+//            cout.print((component[i] + 1) + " ");
+            cout.print("c");
         }
         cout.println();
 
@@ -65,9 +67,11 @@ public class InputOutput {
     //Статические методы/свойства классов - это такие методы/свойства, к которым можно обратиться не создавая объект данного класса.
     public static void main(String[] args) throws IOException {
         InputOutput myIO = new InputOutput();       //создаем объект класса ввода-вывода
-        myIO.getData(myIO.Graph);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
+        myIO.Graph = myIO.getData(myIO.Graph);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
         Algorithm solution = new Algorithm();   //создаем объект класса алгоритм
-        myIO.componentNum = solution.run(myIO.component);   //алгоритм поиска CCS возвращает нам кол-во компонент связности
+        myIO.componentNum = solution.run(myIO.Graph,myIO.numV, myIO.numE,myIO.component);   //алгоритм поиска CCS возвращает нам кол-во компонент связности
+
+        //теперь искл вылетает только тут: (nullptrexc)
         myIO.printData(myIO.componentNum, myIO.numV,myIO.component);    //вывод результатов (в аргументах - те данные, которые надо вывести)
     }
 }
