@@ -61,11 +61,14 @@ public class InputOutput {
         cin.close();
         cout.close();
     }
-    public static void main() throws IOException {
-        getData(Graph);
-        Algorithm solution = new Algorithm();
-        componentNum =  solution.run(component);
-        printData(componentNum, numV,component);
+
+    //Статические методы/свойства классов - это такие методы/свойства, к которым можно обратиться не создавая объект данного класса.
+    public static void main(String[] args) throws IOException {
+        InputOutput myIO = new InputOutput();       //создаем объект класса ввода-вывода
+        myIO.getData(myIO.Graph);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
+        Algorithm solution = new Algorithm();   //создаем объект класса алгоритм
+        myIO.componentNum = solution.run(myIO.component);   //алгоритм поиска CCS возвращает нам кол-во компонент связности
+        myIO.printData(myIO.componentNum, myIO.numV,myIO.component);    //вывод результатов (в аргументах - те данные, которые надо вывести)
     }
 }
 
