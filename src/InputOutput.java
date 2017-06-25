@@ -69,13 +69,13 @@ public class InputOutput {
 
     //Статические методы/свойства классов - это такие методы/свойства, к которым можно обратиться не создавая объект данного класса.
     public static void main(String[] args) throws IOException {
+        boolean onestep = false; //переменная означает, один шаг алгортма делаем или все (ее надо запросить у юзера)
         InputOutput myIO = new InputOutput();     //создаем объект класса ввода-вывода
         BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));  //создаем объект класса ввода (???)
         myIO.Graph = myIO.getData(myIO.Graph, cin);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
         Algorithm solution = new Algorithm();     //создаем объект класса алгоритм
-        myIO.Graph.componentNum = solution.run(myIO.Graph);   //!!!!!!!алгоритм поиска CCS возвращает нам кол-во компонент связности
+        myIO.Graph.componentNum = solution.run(myIO.Graph, onestep);   //!!!!!!!алгоритм поиска CCS возвращает нам кол-во компонент связности
 
-        //теперь искл вылетает только тут: (nullptrexc)
         myIO.printData(myIO.Graph);    //вывод результатов (в аргументах - те данные, которые надо вывести)
         cin.close();
     }
