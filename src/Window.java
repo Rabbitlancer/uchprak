@@ -46,8 +46,6 @@ public class Window extends QMainWindow {
     }
 
     public Window() {
-        JFrame fr = new JFrame();
-        fr.setVisible(true);
         QLabel label = new QLabel(this);
         label.setText("Vertices:");
         label.setGeometry(12,12,64,12);
