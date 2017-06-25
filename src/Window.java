@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import EDU.oswego.cs.dl.util.concurrent.Slot;
@@ -12,17 +15,15 @@ public class Window extends QMainWindow {
 
     private QLabel descLabel;
     private QLabel resLabel;
-    private QLineEdit vertEdit;
-    private QScrollArea edgeList;
+    private QTextEdit graphEdit;
     private QPushButton buttonLoad;
     private QPushButton buttonInit;
     private QPushButton buttonStep;
     private QPushButton buttonRun;
 
-    private QFrame canvas;
+    private Canvas canvas;
 
-    private QFrame edgeFrame;
-    private ArrayList<QLineEdit> edgeEdits;
+    private InputOutput io;
 
     public static void main(String[] args) {
         QApplication.initialize(args);
@@ -32,49 +33,17 @@ public class Window extends QMainWindow {
         QApplication.shutdown();
     }
 
-    private void setEdgeList(int amount) {
-        for (int i = 0; i<edgeEdits.size(); ++i) {
-            edgeEdits.get(i).del();
-        }
-        edgeEdits.clear();
-
-        edgeFrame.setGeometry(0,0,128,16*amount);
-
-        QLineEdit cur;
-        for (int i = 0; i<amount; ++i) {
-            cur = new QLineEdit(edgeFrame);
-            cur.setGeometry(0,16*i,112,16);
-            edgeEdits.add(cur);
-        }
-    }
-
     public Window() {
+        io = new InputOutput();
+
         QLabel label = new QLabel(this);
-        label.setText("Vertices:");
+        label.setText("Graph data:");
         label.setGeometry(12,12,64,12);
-        //label.connect(this,);
-
-
-        label = new QLabel(this);
-        label.setText("Edges:");
-        label.setGeometry(12,48,64,12);
 
         //строка для указания кол-ва вершин
-        this.vertEdit = new QLineEdit(this);
-        this.vertEdit.setGeometry(12,24,128,16);
-        this.vertEdit.setText("2");
-
-        //штука для списка инцидентности
-        this.edgeList = new QScrollArea(this);
-        this.edgeList.setGeometry(12,64,128,128);
-        this.edgeFrame = new QFrame();
-        this.edgeFrame.setGeometry(0,0,128,1);
-        this.edgeList.setWidget(edgeFrame);
-        this.edgeList.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);
-        this.edgeList.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn);
-
-        this.edgeEdits = new ArrayList<>(0);
-        this.setEdgeList(Integer.parseInt(this.vertEdit.text()));
+        this.graphEdit = new QTextEdit(this);
+        this.graphEdit.setGeometry(12,32,128,144);
+        this.graphEdit.setText("2 2\n1 2\n2 1");
 
         //кнопки
         this.buttonLoad = new QPushButton(this);
@@ -83,26 +52,15 @@ public class Window extends QMainWindow {
         this.buttonInit = new QPushButton(this);
         this.buttonInit.setText("Init");
         this.buttonInit.setGeometry(80,200,60,24);
-   //     ui.buttonInit.clicked.connect();
-   //     public void setText(){
-   //
-   // }
-
         this.buttonStep = new QPushButton(this);
         this.buttonStep.setText("Step");
         this.buttonStep.setGeometry(12,232,60,24);
         this.buttonRun = new QPushButton(this);
         this.buttonRun.setText("Run!");
         this.buttonRun.setGeometry(80,232,60,24);
-       // buttonRun.connect(Signal(clicked), Slot(quit()));
- //   buttonRun.clicked.connect(this,"func");
-   // public void func()
-     //   {
-       //      buttonRun.setEnabled(false) ;
-     //}
 
         //рисовальник - в теории (возможно, потом надо будет заменить другим классом)
-        this.canvas = new QFrame(this);
+        this.canvas = new Canvas(this);
         this.canvas.setGeometry(156,12,428,300);
         this.canvas.setFrameShape(QFrame.Shape.Panel);
 
@@ -119,27 +77,30 @@ public class Window extends QMainWindow {
         this.setWindowTitle("Strongly-connected connectivity search. 5304tech (R)");
 
 
-        buttonLoad.clicked.connect(this, "onButtonLoadPressed(bool)");
-        buttonInit.clicked.connect(this, "onButtonInitPressed(bool)");
-        buttonStep.clicked.connect(this, "onButtonStepPressed(bool)");
-        buttonRun.clicked.connect (this, "onButtonRunPressed(bool)");
-        vertEdit.editingFinished.connect(this, "onVertEditPressed()");
+        buttonLoad.clicked.connect(this, "onButtonLoadPressed(Boolean)");
+        buttonInit.clicked.connect(this, "onButtonInitPressed(Boolean)");
+        buttonStep.clicked.connect(this, "onButtonStepPressed(Boolean)");
+        buttonRun.clicked.connect (this, "onButtonRunPressed(Boolean)");
     }
 
-    public void onButtonLoadPressed(bool clicked) {
+    public void onButtonLoadPressed(Boolean clicked) {
 
     }
 
-    public void onButtonInitPressed(bool clicked) {
+    public void onButtonInitPressed(Boolean clicked) {
+        try {
+            this.canvas.setContent(io.getData(new MyGraph(), new BufferedReader(new StringReader(graphEdit.toPlainText()))));
+            this.descLabel.setText("Description: algorithm initialized.");
+        } catch (Exception e) {
+            this.descLabel.setText("Description: exception! "+e.getClass().getName()+": "+e.getMessage());
+        }
+    }
+
+    public void onButtonStepPressed(Boolean clicked) {
 
     }
-    public void onButtonStepPressed(bool clicked) {
 
-    }
-    public void onButtonRunPressed(bool clicked) {
-
-    }
-    public void onVertEditPressed(){
+    public void onButtonRunPressed(Boolean clicked) {
 
     }
 

@@ -1,5 +1,3 @@
-package com.example.TwoClasses;
-
 //import путь.к.классу.ИмяКласса;
 //import com.example.TwoClasses.InputOutput;
 //import java.io.BufferedReader;      //считывает текст из символьного потока ввода, буферизируя прочитанные символы

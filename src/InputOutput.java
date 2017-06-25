@@ -1,5 +1,3 @@
-package com.example.TwoClasses;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,8 +26,7 @@ public class InputOutput {
     private MyGraph Graph;
 
     //ввод данных с консоли
-    public MyGraph getData(MyGraph Graph) throws IOException {//передаем ссылку на граф, в который надо считать данные,
-        cin = new BufferedReader(new InputStreamReader(System.in));
+    public MyGraph getData(MyGraph Graph, BufferedReader cin) throws IOException {//передаем ссылку на граф, в который надо считать данные,
         cout = new PrintWriter(System.out);
 
         tokenizer = new StringTokenizer(cin.readLine());
@@ -69,7 +66,7 @@ public class InputOutput {
     }
 
     //Статические методы/свойства классов - это такие методы/свойства, к которым можно обратиться не создавая объект данного класса.
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         InputOutput myIO = new InputOutput();     //создаем объект класса ввода-вывода
         myIO.Graph = myIO.getData(myIO.Graph);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
         Algorithm solution = new Algorithm();     //создаем объект класса алгоритм
@@ -77,6 +74,6 @@ public class InputOutput {
 
         //теперь искл вылетает только тут: (nullptrexc)
         myIO.printData(myIO.Graph);    //вывод результатов (в аргументах - те данные, которые надо вывести)
-    }
+    }*/
 }
 
