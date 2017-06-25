@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.lang.Math;
 
 //объект, превращающий абстрактный граф в его плоскостное представление
@@ -11,10 +10,6 @@ public class VGraph {
     public int vertices;
     private List<VGraphNode> nodes;
     private Random rand;
-
-    private double dist(Coord p1, Coord p2) {
-        return Math.sqrt(Math.pow((p1.x-p2.x),2) + Math.pow((p1.y-p2.y),2));
-    }
 
     public VGraph() {
         rand = new Random();
@@ -58,7 +53,12 @@ public class VGraph {
         }
     }
 
-    public Coord getCoord(int id) {
-        return nodes.get(id).pos;
+    public List<Coord> getCoord() {
+        List<Coord> res = new ArrayList<>(vertices);
+
+        for (VGraphNode vertex: nodes) {
+            res.add(vertex.pos);
+        }
+        return res;
     }
 }
