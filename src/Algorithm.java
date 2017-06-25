@@ -1,12 +1,5 @@
-//import путь.к.классу.ИмяКласса;
-//import com.example.TwoClasses.InputOutput;
-//import java.io.BufferedReader;      //считывает текст из символьного потока ввода, буферизируя прочитанные символы
-import java.io.IOException;         //класс исключения ввода-вывода
-//import java.io.InputStreamReader;   //мост от потоков байтов до символьных потоков: читает байты и декодирует их в символы
-//import java.io.PrintWriter;         //для вывода информации на консоль, в файл или любой другой поток вывода
 import java.util.ArrayList;         //автоматически расширяемый массив
 import java.util.Arrays;            //для работы с массивами
-//import java.util.StringTokenizer;   //для разбиения входящей строки на слова
 
 
 public class Algorithm {
@@ -16,13 +9,13 @@ public class Algorithm {
     //массив для хранения информации о пройденных и не пройденных вершинах
     private boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
-    ArrayList<Integer> topSort;
-    //  int componentNum; //количество компонент связности в орграфе
+    private ArrayList<Integer> topSort;
+
     private boolean init = false;
     private boolean state = false;
     public int v;
-    private int myi;
-    int componentID;
+    public int myi;
+    private int componentID;
 
     //обход в глубину
     private void dfs(int v, ArrayList<Integer>[] Graph) {
