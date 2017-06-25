@@ -5,17 +5,14 @@ package com.example.TwoClasses;
 //import java.io.BufferedReader;      //считывает текст из символьного потока ввода, буферизируя прочитанные символы
 import java.io.IOException;         //класс исключения ввода-вывода
 //import java.io.InputStreamReader;   //мост от потоков байтов до символьных потоков: читает байты и декодирует их в символы
-import java.io.PrintWriter;         //для вывода информации на консоль, в файл или любой другой поток вывода
+//import java.io.PrintWriter;         //для вывода информации на консоль, в файл или любой другой поток вывода
 import java.util.ArrayList;         //автоматически расширяемый массив
 import java.util.Arrays;            //для работы с массивами
 //import java.util.StringTokenizer;   //для разбиения входящей строки на слова
 
-public class Algorithm {
 
-    private int numV; //количество вершин в орграфе
-    private int numE; //количество дуг в орграфе
-    //список инцидентности орграфа
-    private ArrayList<Integer> Graph[];
+//похоже, основная проблема - передача графа в методы. NullPtrException возникает при работе с полученным в качестве аргумента графом
+public class Algorithm {
 
     //список инцидентности транспонированного орграфа (массив списков)
     private ArrayList<Integer> GraphT[];
@@ -23,10 +20,10 @@ public class Algorithm {
     private boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
     ArrayList<Integer> topSort;
-    int componentNum; //количество компонент связности в орграфе
+  //  int componentNum; //количество компонент связности в орграфе
 
     //обход в глубину
-    private void dfs(int v) {
+    private void dfs(int v, ArrayList<Integer>[] Graph) {
         //если вершина уже рассмотрена, то не производим из нее вызов процедуры
         if (usedV[v]) {
             return;
@@ -35,7 +32,7 @@ public class Algorithm {
         //запускаем обход из всех вершин, смежных v
         for (int i = 0; i < Graph[v].size(); ++i) {
             int w = Graph[v].get(i);
-            dfs(w); //вызов обхода в глубину от вершины w, смежной с вершиной v
+            dfs(w,Graph); //вызов обхода в глубину от вершины w, смежной с вершиной v
         }
         //добавляем посещенную вершину в топологический порядок
         topSort.add(v);
@@ -57,7 +54,7 @@ public class Algorithm {
     }
 
     // метод транспонирования графа
-    private ArrayList[] Transpose(){
+    private ArrayList[] Transpose(ArrayList<Integer>[] Graph,int numV){
         GraphT = new ArrayList[numV];
         for (int i = 0; i < numV; ++i) {
             GraphT[i] = new ArrayList<Integer>();       //создали транспонированный граф (пустой)
@@ -75,22 +72,22 @@ public class Algorithm {
     // который вернёт логическое значение true или false в зависимости от присутствия элемента в наборе
        //     System.out.println (list.contains("Картошка") + "");
 
-    public int run(int []component) throws IOException {
+    public int run(ArrayList<Integer>[] Graph,int numV,int numE,int []component) throws IOException {
        //InputOutput.getData(Graph);      //получаем данные
-       GraphT = Transpose();    //транспонируем граф
+       GraphT = Transpose(Graph, numV);    //транспонируем граф
 
         //помечаем все вершины графа, как непосещенные
         usedV = new boolean[numV];
         Arrays.fill(usedV, false);
 
-        component = new int[numV];
-        Arrays.fill(component, 0);
+        component = new int[numV];  //массив для компонент связности
+        Arrays.fill(component, 0);  //заполняем нулями
 
         topSort = new ArrayList<Integer>();
 
         //запускаем обход в глубину для расчета времени выхода каждой вершины
         for (int v = 0; v < numV; ++v) {
-            dfs(v);
+            dfs(v,Graph);
         }
 
         //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин
@@ -103,7 +100,7 @@ public class Algorithm {
                 componentID++;
             }
         }
-        componentNum = componentID;
+        int componentNum = componentID;
       //  InputOutput.printData(componentNum, numV, component);
         return componentNum;        //!!!
     }
