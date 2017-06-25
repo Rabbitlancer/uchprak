@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 
+import EDU.oswego.cs.dl.util.concurrent.Slot;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
+import sun.misc.Signal;
 
 import javax.swing.*;
 
@@ -49,6 +52,8 @@ public class Window extends QMainWindow {
         QLabel label = new QLabel(this);
         label.setText("Vertices:");
         label.setGeometry(12,12,64,12);
+        //label.connect(this,);
+
 
         label = new QLabel(this);
         label.setText("Edges:");
@@ -78,12 +83,23 @@ public class Window extends QMainWindow {
         this.buttonInit = new QPushButton(this);
         this.buttonInit.setText("Init");
         this.buttonInit.setGeometry(80,200,60,24);
+   //     ui.buttonInit.clicked.connect();
+   //     public void setText(){
+   //
+   // }
+
         this.buttonStep = new QPushButton(this);
         this.buttonStep.setText("Step");
         this.buttonStep.setGeometry(12,232,60,24);
         this.buttonRun = new QPushButton(this);
         this.buttonRun.setText("Run!");
         this.buttonRun.setGeometry(80,232,60,24);
+       // buttonRun.connect(Signal(clicked), Slot(quit()));
+ //   buttonRun.clicked.connect(this,"func");
+   // public void func()
+     //   {
+       //      buttonRun.setEnabled(false) ;
+     //}
 
         //рисовальник - в теории (возможно, потом надо будет заменить другим классом)
         this.canvas = new QFrame(this);
@@ -101,6 +117,31 @@ public class Window extends QMainWindow {
         //завершающие настройки
         this.setFixedSize(600,400);
         this.setWindowTitle("Strongly-connected connectivity search. 5304tech (R)");
+
+
+        buttonLoad.clicked.connect(this, "onButtonLoadPressed(bool)");
+        buttonInit.clicked.connect(this, "onButtonInitPressed(bool)");
+        buttonStep.clicked.connect(this, "onButtonStepPressed(bool)");
+        buttonRun.clicked.connect (this, "onButtonRunPressed(bool)");
+        vertEdit.editingFinished.connect(this, "onVertEditPressed()");
     }
+
+    public void onButtonLoadPressed(bool clicked) {
+
+    }
+
+    public void onButtonInitPressed(bool clicked) {
+
+    }
+    public void onButtonStepPressed(bool clicked) {
+
+    }
+    public void onButtonRunPressed(bool clicked) {
+
+    }
+    public void onVertEditPressed(){
+
+    }
+
 
 }
