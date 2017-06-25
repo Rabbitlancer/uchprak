@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 
+import javax.swing.*;
+
 public class Window extends QMainWindow {
 
     private QLabel descLabel;
@@ -44,6 +46,8 @@ public class Window extends QMainWindow {
     }
 
     public Window() {
+        JFrame fr = new JFrame();
+        fr.setVisible(true);
         QLabel label = new QLabel(this);
         label.setText("Vertices:");
         label.setGeometry(12,12,64,12);
