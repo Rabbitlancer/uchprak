@@ -9,7 +9,6 @@ import java.util.Arrays;            //для работы с массивами
 //import java.util.StringTokenizer;   //для разбиения входящей строки на слова
 
 
-//похоже, основная проблема - передача графа в методы. NullPtrException возникает при работе с полученным в качестве аргумента графом
 public class Algorithm {
 
     //список инцидентности транспонированного орграфа (массив списков)
@@ -18,7 +17,12 @@ public class Algorithm {
     private boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
     ArrayList<Integer> topSort;
-  //  int componentNum; //количество компонент связности в орграфе
+    //  int componentNum; //количество компонент связности в орграфе
+    private boolean init = false;
+    private boolean state = false;
+    public int v;
+    private int myi;
+    int componentID;
 
     //обход в глубину
     private void dfs(int v, ArrayList<Integer>[] Graph) {
@@ -50,30 +54,18 @@ public class Algorithm {
             ccs(w, componentID,component); //вызов обхода в глубину от вершины w, смежной с вершиной v в транспонированном графе
         }
     }
-
-    // метод транспонирования графа
-    /*private ArrayList[] Transpose(MyGraph Graph){
-        GraphT = new ArrayList[numV];
-        for (int i = 0; i < numV; ++i) {
-            GraphT[i] = new ArrayList<Integer>();       //создали транспонированный граф (пустой)
-        }
-        for (int i = 0; i < numV; ++i) {    //проходим по всем спискам
-            for (int j = 0; j < Graph[i].size(); ++j) {   //проходим по всем элементам одного (текущего)списка
-                int v = Graph[i].get(j);
-                GraphT[v].add(i);       //добавляем обратную дугу в транспонированный граф
-            }
-        }
-        return GraphT;
-    }*/
-
     //Чтобы узнать, есть в массиве какой-либо элемент, можно воспользоваться методом contains(),
     // который вернёт логическое значение true или false в зависимости от присутствия элемента в наборе
-       //     System.out.println (list.contains("Картошка") + "");
+    //     System.out.println (list.contains("Картошка") + "");
 
-    public int run(MyGraph Graph) throws IOException {
-       //InputOutput.getData(Graph);      //получаем данные
-       GraphT = Graph.Transpose(Graph);    //транспонируем граф
+    public int run(MyGraph Graph, boolean onestep) throws IOException {
+        if (!init) runInit(Graph, onestep);
+        int res = runCycle(Graph,onestep);
+        return res;
+    }
 
+    public void runInit (MyGraph Graph, boolean onestep) {
+        GraphT = Graph.Transpose(Graph);    //транспонируем граф
         //помечаем все вершины графа, как непосещенные
         usedV = new boolean[Graph.numV];
         Arrays.fill(usedV, false);
@@ -82,26 +74,42 @@ public class Algorithm {
         Arrays.fill(Graph.component, 0);  //заполняем нулями
 
         topSort = new ArrayList<Integer>();
+        init = true;
+        v=0;
+    }
 
+    public int runCycle (MyGraph Graph, boolean onestep) {
         //запускаем обход в глубину для расчета времени выхода каждой вершины
-        for (int v = 0; v < Graph.numV; ++v) {
-            dfs(v,Graph.IncidList);
-        }
-
-        //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин
-        Arrays.fill(usedV, false);
-        int componentID = 0;
-        for (int i = topSort.size() - 1; i >= 0; --i) {
-            int v = topSort.get(i);
-            if (!usedV[v]) {
-                ccs(v, componentID,Graph.component);
-                componentID++;
+        while (!onestep) {
+            if (!state) {
+                while (!onestep && v < Graph.numV) {
+                    dfs(v, Graph.IncidList);
+                    ++v;
+                }
+                if (v == Graph.numV) {
+                    Arrays.fill(usedV, false);
+                    componentID = 0;
+                    state = true;
+                    myi = topSort.size() - 1;
+                }
+            } else {
+                while (!onestep && myi >= 0) {
+                    v = topSort.get(myi);
+                    if (!usedV[v]) {
+                        ccs(v, componentID, Graph.component);
+                        componentID++;
+                    }
+                    myi--;
+                }
+                if (myi == -1) {
+                    int componentNum = componentID;
+                    return componentNum;        //!!!
+                }
             }
         }
-        int componentNum = componentID;
-      //  InputOutput.printData(componentNum, numV, component);
-        return componentNum;        //!!!
-    }
+        //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин
+        return -1;
+        }
 }
 
 
