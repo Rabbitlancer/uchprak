@@ -15,7 +15,7 @@ import java.util.Arrays;            //для работы с массивами
 public class Algorithm {
 
     //список инцидентности транспонированного орграфа (массив списков)
-    private ArrayList<Integer> GraphT[];
+    private MyGraph GraphT;
     //массив для хранения информации о пройденных и не пройденных вершинах
     private boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
@@ -47,14 +47,14 @@ public class Algorithm {
         usedV[v] = true; //помечаем вершину как пройденную
         component[v] = componentID;
         //запускаем обход из всех вершин, смежных с вершиной v
-        for (int i = 0; i < GraphT[v].size(); ++i) {
-            int w = GraphT[v].get(i);
+        for (int i = 0; i < GraphT.IncidList[v].size(); ++i) {
+            int w = GraphT.IncidList[v].get(i);
             ccs(w, componentID,component); //вызов обхода в глубину от вершины w, смежной с вершиной v в транспонированном графе
         }
     }
 
     // метод транспонирования графа
-    private ArrayList[] Transpose(ArrayList<Integer>[] Graph,int numV){
+    /*private ArrayList[] Transpose(MyGraph Graph){
         GraphT = new ArrayList[numV];
         for (int i = 0; i < numV; ++i) {
             GraphT[i] = new ArrayList<Integer>();       //создали транспонированный граф (пустой)
@@ -66,28 +66,28 @@ public class Algorithm {
             }
         }
         return GraphT;
-    }
+    }*/
 
     //Чтобы узнать, есть в массиве какой-либо элемент, можно воспользоваться методом contains(),
     // который вернёт логическое значение true или false в зависимости от присутствия элемента в наборе
        //     System.out.println (list.contains("Картошка") + "");
 
-    public int run(ArrayList<Integer>[] Graph,int numV,int numE,int []component) throws IOException {
+    public int run(MyGraph Graph) throws IOException {
        //InputOutput.getData(Graph);      //получаем данные
-       GraphT = Transpose(Graph, numV);    //транспонируем граф
+       GraphT = Graph.Transpose(Graph);    //транспонируем граф
 
         //помечаем все вершины графа, как непосещенные
-        usedV = new boolean[numV];
+        usedV = new boolean[Graph.numV];
         Arrays.fill(usedV, false);
 
-        component = new int[numV];  //массив для компонент связности
-        Arrays.fill(component, 0);  //заполняем нулями
+        Graph.component = new int[Graph.numV];  //массив для компонент связности
+        Arrays.fill(Graph.component, 0);  //заполняем нулями
 
         topSort = new ArrayList<Integer>();
 
         //запускаем обход в глубину для расчета времени выхода каждой вершины
-        for (int v = 0; v < numV; ++v) {
-            dfs(v,Graph);
+        for (int v = 0; v < Graph.numV; ++v) {
+            dfs(v,Graph.IncidList);
         }
 
         //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин
@@ -96,7 +96,7 @@ public class Algorithm {
         for (int i = topSort.size() - 1; i >= 0; --i) {
             int v = topSort.get(i);
             if (!usedV[v]) {
-                ccs(v, componentID,component);
+                ccs(v, componentID,Graph.component);
                 componentID++;
             }
         }
