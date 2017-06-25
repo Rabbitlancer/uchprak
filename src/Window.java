@@ -1,15 +1,6 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
-
-import EDU.oswego.cs.dl.util.concurrent.Slot;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
-import sun.misc.Signal;
-
-import javax.swing.*;
 
 public class Window extends QMainWindow {
 
@@ -24,6 +15,8 @@ public class Window extends QMainWindow {
     private Canvas canvas;
 
     private InputOutput io;
+    private Algorithm solution;
+    private MyGraph graph;
 
     public static void main(String[] args) {
         QApplication.initialize(args);
@@ -33,7 +26,7 @@ public class Window extends QMainWindow {
         QApplication.shutdown();
     }
 
-    public Window() {
+    private Window() {
         io = new InputOutput();
 
         QLabel label = new QLabel(this);
@@ -81,28 +74,45 @@ public class Window extends QMainWindow {
         buttonInit.clicked.connect(this, "onButtonInitPressed(Boolean)");
         buttonStep.clicked.connect(this, "onButtonStepPressed(Boolean)");
         buttonRun.clicked.connect (this, "onButtonRunPressed(Boolean)");
+
+        buttonRun.setEnabled(false);
+        buttonStep.setEnabled(false);
     }
 
     public void onButtonLoadPressed(Boolean clicked) {
-
+        QFileDialog fd = new QFileDialog(null,"Select graph file...");
+        fd.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen);
+        fd.setFilter("Text files | (*.txt)");
+        fd.exec();
     }
 
     public void onButtonInitPressed(Boolean clicked) {
         try {
-            this.canvas.setContent(io.getData(new MyGraph(), new BufferedReader(new StringReader(graphEdit.toPlainText()))));
+            graph = new MyGraph();
+            graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.toPlainText())));
+            this.canvas.setContent(graph);
+            solution = new Algorithm();
             this.descLabel.setText("Description: algorithm initialized.");
+            buttonRun.setEnabled(true);
+            buttonStep.setEnabled(true);
+            buttonLoad.setEnabled(false);
+            buttonInit.setEnabled(false);
         } catch (Exception e) {
             this.descLabel.setText("Description: exception! "+e.getClass().getName()+": "+e.getMessage());
         }
     }
 
     public void onButtonStepPressed(Boolean clicked) {
-
+        int res = solution.run(graph, true);
+        if (res == -1) {
+            this.resLabel.setText("Result (connected groups found): working...");
+        } else {
+            this.resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+        }
     }
 
     public void onButtonRunPressed(Boolean clicked) {
-
+        int res = solution.run(graph, false);
+        this.resLabel.setText("Result (connected groups found): "+String.valueOf(res));
     }
-
-
 }

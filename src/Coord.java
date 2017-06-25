@@ -1,3 +1,4 @@
+//тут вообще нужен комментарий?
 public class Coord {
     public int x;
     public int y;
