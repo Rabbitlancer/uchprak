@@ -58,7 +58,7 @@ public class Algorithm {
     // который вернёт логическое значение true или false в зависимости от присутствия элемента в наборе
     //     System.out.println (list.contains("Картошка") + "");
 
-    public int run(MyGraph Graph, boolean onestep) throws IOException {
+    public int run(MyGraph Graph, boolean onestep) {
         if (!init) runInit(Graph, onestep);
         int res = runCycle(Graph,onestep);
         return res;
