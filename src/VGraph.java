@@ -3,18 +3,33 @@ import java.lang.Math;
 
 //объект, превращающий абстрактный граф в его плоскостное представление
 public class VGraph {
+    //константы сил визуализации
     private static final double c1 = 2;
     private static final double c2 = 1;
     private static final double c3 = 1;
     private static final double c4 = 0.1;
+
     public int vertices;
     private List<VGraphNode> nodes;
     private Random rand;
 
-    public VGraph() {
+    public VGraph(MyGraph original) {
         rand = new Random();
+
+        this.vertices = original.numV;
+        nodes = new ArrayList<>(this.vertices);
+        for (int i = 0; i<this.vertices; ++i) {
+            int c = 0;
+            VGraphNode node = new VGraphNode();
+            for (int cur: original.IncidList[i]) {
+                ++c;
+                node.edges.add(cur);
+            }
+            node.connections = c;
+        }
     }
 
+    //расчетная функция для расположения вершин графа
     public void generateLayout() {
         for (VGraphNode vertex: nodes) {
             vertex.pos = new Coord(rand.nextInt(400), rand.nextInt(250));

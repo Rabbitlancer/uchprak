@@ -1,5 +1,3 @@
-package com.example.TwoClasses;
-
 import java.util.ArrayList;
 
 public class MyGraph {

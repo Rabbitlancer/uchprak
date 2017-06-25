@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class VGraphNode {
@@ -5,16 +6,13 @@ public class VGraphNode {
     public int id;
     private static int nextid;
     public Coord pos;
-    private List<Integer> edges;
+    public List<Integer> edges;
 
     public VGraphNode() {
         id = nextid;
         nextid++;
-    }
-
-    public void setCoord(Coord pos) {
-        this.pos.x = pos.x;
-        this.pos.y = pos.y;
+        connections = 0;
+        edges = new ArrayList<>(0);
     }
 
     public Boolean isConnected(VGraphNode to) {
