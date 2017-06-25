@@ -26,6 +26,7 @@ public class VGraph {
                 node.edges.add(cur);
             }
             node.connections = c;
+            nodes.add(node);
         }
     }
 
@@ -64,6 +65,11 @@ public class VGraph {
                 vertex.pos.x += t.intValue();
                 t = c4*force.y;
                 vertex.pos.y += t.intValue();
+
+                if (vertex.pos.x<0) vertex.pos.x = 0;
+                if (vertex.pos.x>428) vertex.pos.x = 428;
+                if (vertex.pos.y<0) vertex.pos.y = 0;
+                if (vertex.pos.y>300) vertex.pos.y = 300;
             }
         }
     }

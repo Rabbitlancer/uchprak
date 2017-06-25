@@ -27,7 +27,6 @@ public class InputOutput {
 
     //ввод данных с консоли
     public MyGraph getData(MyGraph Graph, BufferedReader cin) throws IOException {//передаем ссылку на граф, в который надо считать данные,
-       // cin = new BufferedReader(new InputStreamReader(System.in));
         cout = new PrintWriter(System.out);
         Graph = new MyGraph();
 
@@ -68,8 +67,9 @@ public class InputOutput {
     }
 
     //Статические методы/свойства классов - это такие методы/свойства, к которым можно обратиться не создавая объект данного класса.
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         boolean onestep = false; //переменная означает, один шаг алгортма делаем или все (ее надо запросить у юзера)
+
         InputOutput myIO = new InputOutput();     //создаем объект класса ввода-вывода
         BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));  //создаем объект класса ввода (???)
         myIO.Graph = myIO.getData(myIO.Graph, cin);    //считываем данные в граф (граф - свойство нашего класса ввода-вывода)
@@ -77,7 +77,6 @@ public class InputOutput {
         myIO.Graph.componentNum = solution.run(myIO.Graph, onestep);   //!!!!!!!алгоритм поиска CCS возвращает нам кол-во компонент связности
 
         myIO.printData(myIO.Graph);    //вывод результатов (в аргументах - те данные, которые надо вывести)
-        cin.close();
-    }
+    }*/
 }
 
