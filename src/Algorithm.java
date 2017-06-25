@@ -72,32 +72,31 @@ public class Algorithm {
     }
 
     public int runCycle (MyGraph Graph, boolean onestep) {
-        //запускаем обход в глубину для расчета времени выхода каждой вершины
-        while (!onestep) {
-            if (!state) {
-                while (!onestep && v < Graph.numV) {
-                    dfs(v, Graph.IncidList);
-                    ++v;
+    //запускаем обход в глубину для расчета времени выхода каждой вершины
+        if (!state) {
+            do {
+                dfs(v, Graph.IncidList);
+                ++v;
+            } while (!onestep && v < Graph.numV);
+            if (v == Graph.numV) {
+                Arrays.fill(usedV, false);
+                componentID = 0;
+                state = true;
+                myi = topSort.size() - 1;
+            }
+        }
+        if (state) {
+            do {
+                v = topSort.get(myi);
+                if (!usedV[v]) {
+                    ccs(v, componentID, Graph.component);
+                    componentID++;
                 }
-                if (v == Graph.numV) {
-                    Arrays.fill(usedV, false);
-                    componentID = 0;
-                    state = true;
-                    myi = topSort.size() - 1;
-                }
-            } else {
-                while (!onestep && myi >= 0) {
-                    v = topSort.get(myi);
-                    if (!usedV[v]) {
-                        ccs(v, componentID, Graph.component);
-                        componentID++;
-                    }
-                    myi--;
-                }
-                if (myi == -1) {
-                    int componentNum = componentID;
-                    return componentNum;        //!!!
-                }
+                myi--;
+            } while (!onestep && myi >= 0);
+            if (myi == -1) {
+                int componentNum = componentID;
+                return componentNum;        //!!!
             }
         }
         //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин

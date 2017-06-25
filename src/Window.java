@@ -104,15 +104,21 @@ public class Window extends QMainWindow {
 
     public void onButtonStepPressed(Boolean clicked) {
         int res = solution.run(graph, true);
+        this.canvas.redraw();
         if (res == -1) {
             this.resLabel.setText("Result (connected groups found): working...");
         } else {
             this.resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+            buttonRun.setEnabled(false);
+            buttonStep.setEnabled(false);
         }
     }
 
     public void onButtonRunPressed(Boolean clicked) {
         int res = solution.run(graph, false);
+        this.canvas.redraw();
         this.resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+        buttonRun.setEnabled(false);
+        buttonStep.setEnabled(false);
     }
 }

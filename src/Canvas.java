@@ -1,4 +1,3 @@
-import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.gui.*;
 
 import java.util.List;
@@ -8,15 +7,18 @@ public class Canvas extends QGraphicsView {
     private VGraph content;
     private QGraphicsScene scene;
     private QBrush brWhite = new QBrush(new QColor(255,255,255));
+    private QBrush brBlack = new QBrush(new QColor(0,0,0));
     private QPen pnBlack = new QPen(new QColor(0,0,0));
 
     public Canvas(QWidget parent) {
         super(parent);
-        this.scene = new QGraphicsScene(parent);
+        this.scene = new QGraphicsScene(0,0,428,300,this);
         this.setScene(this.scene);
         this.scene.setBackgroundBrush(new QBrush(new QColor(255,255,255)));
         this.scene.setForegroundBrush(new QBrush(new QColor(255,255,255)));
         this.ensureVisible(0,0,428,300,0,0);
+        this.pnBlack.setBrush(brBlack);
+        this.pnBlack.setWidth(2);
         this.centerOn(214,150);
     }
 
@@ -27,7 +29,6 @@ public class Canvas extends QGraphicsView {
     }
 
     public void redraw() {
-
         this.scene.setForegroundBrush(brWhite);
         this.scene.items().add(new QGraphicsRectItem(0,0,428,300));
 
@@ -37,9 +38,9 @@ public class Canvas extends QGraphicsView {
         }
 
         this.setScene(this.scene);
-        this.updateSceneRect(new QRectF(0,0,428,300));
+        this.ensureVisible(this.scene.sceneRect());
         this.update();
-        this.show();
         this.repaint();
+        this.show();
     }
 }
