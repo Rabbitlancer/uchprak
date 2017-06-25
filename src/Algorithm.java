@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-package com.example.TwoClasses;
-
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
 //import путь.к.классу.ИмяКласса;
 //import com.example.TwoClasses.InputOutput;
 //import java.io.BufferedReader;      //считывает текст из символьного потока ввода, буферизируя прочитанные символы
@@ -23,11 +18,7 @@ public class Algorithm {
     private boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
     ArrayList<Integer> topSort;
-<<<<<<< HEAD
     //  int componentNum; //количество компонент связности в орграфе
-=======
-  //  int componentNum; //количество компонент связности в орграфе
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
 
     //обход в глубину
     private void dfs(int v, ArrayList<Integer>[] Graph) {
@@ -77,19 +68,11 @@ public class Algorithm {
 
     //Чтобы узнать, есть в массиве какой-либо элемент, можно воспользоваться методом contains(),
     // который вернёт логическое значение true или false в зависимости от присутствия элемента в наборе
-<<<<<<< HEAD
     //     System.out.println (list.contains("Картошка") + "");
 
     public int run(MyGraph Graph) throws IOException {
         //InputOutput.getData(Graph);      //получаем данные
         GraphT = Graph.Transpose(Graph);    //транспонируем граф
-=======
-       //     System.out.println (list.contains("Картошка") + "");
-
-    public int run(MyGraph Graph) throws IOException {
-       //InputOutput.getData(Graph);      //получаем данные
-       GraphT = Graph.Transpose(Graph);    //транспонируем граф
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
 
         //помечаем все вершины графа, как непосещенные
         usedV = new boolean[Graph.numV];
@@ -116,11 +99,7 @@ public class Algorithm {
             }
         }
         int componentNum = componentID;
-<<<<<<< HEAD
         //  InputOutput.printData(componentNum, numV, component);
-=======
-      //  InputOutput.printData(componentNum, numV, component);
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
         return componentNum;        //!!!
     }
 }

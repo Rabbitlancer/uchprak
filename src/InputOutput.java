@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-package com.example.TwoClasses;
-
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,10 +29,7 @@ public class InputOutput {
     public MyGraph getData(MyGraph Graph) throws IOException {//передаем ссылку на граф, в который надо считать данные,
         cin = new BufferedReader(new InputStreamReader(System.in));
         cout = new PrintWriter(System.out);
-<<<<<<< HEAD
         Graph = new MyGraph();
-=======
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
 
         tokenizer = new StringTokenizer(cin.readLine());
         Graph.numV = Integer.parseInt(tokenizer.nextToken()); //считываем количество вершин графа
@@ -66,12 +58,8 @@ public class InputOutput {
         cout.println(Graph.componentNum);
         for (int i = 0; i < Graph.numV; ++i) {
             //РАЗОБРАТЬСЯ, ПОЧЕМУ НЕ ВЫВОДИТ КОМПОНЕНТЫ СВЯЗНОСТИ!!! (проблема с передачей массива component)
-<<<<<<< HEAD
-            // cout.print((Graph.component[i] + 1) + " ");
-=======
-         // cout.print((Graph.component[i] + 1) + " ");
->>>>>>> c14d5b6112b2cfcb9b9b5066daec1616a6271e92
-            cout.print("c");
+             cout.print((Graph.component[i] + 1) + " ");
+            //cout.print("c");
         }
         cout.println();
 
