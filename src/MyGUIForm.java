@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringReader;
@@ -118,8 +119,20 @@ public class MyGUIForm extends JFrame{
                 JFileChooser fd = new JFileChooser();
                 int ret = fd.showDialog(null, "Открыть файл");
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File file = fd.getSelectedFile();
-                    label.setText(file.getName());
+                    File file = fd.getSelectedFile();       //получили выбранный файл
+
+                    try(BufferedReader reader =new BufferedReader(new FileReader(file)))
+                    {
+                        // читаем построчно из .txt файла
+                        String line;
+                        graphEdit.setText("");
+                        while ((line = reader.readLine()) != null) {
+                            graphEdit.append(line + "\n");
+                        }
+                    }
+                    catch(IOException ex){
+                        resLabel.setText(ex.getMessage());
+                    }
                 }
             }
         });
@@ -145,17 +158,6 @@ public class MyGUIForm extends JFrame{
 
         setVisible(true);   //для самого окна
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    }
-
-
-
-    public void onButtonLoadPressed(Boolean clicked) {
-        JFileChooser fd = new JFileChooser();
-        int ret = fd.showDialog(null, "Открыть файл");
-        if (ret == JFileChooser.APPROVE_OPTION) {
-            File file = fd.getSelectedFile();
-
-        }
     }
 
     public static void main(String[] args) {
