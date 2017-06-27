@@ -12,7 +12,7 @@ public class Algorithm {
     private ArrayList<Integer> topSort;
 
     private boolean init = false;
-    private boolean state = false;
+    public boolean state = false;
     public int v;
     public int myi;
     private int componentID;

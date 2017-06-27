@@ -53,9 +53,9 @@ public class Window extends QMainWindow {
         this.buttonRun.setGeometry(80,232,60,24);
 
         //рисовальник - в теории (возможно, потом надо будет заменить другим классом)
-        this.canvas = new Canvas(this);
+        /*this.canvas = new Canvas(this);
         this.canvas.setGeometry(156,12,428,300);
-        this.canvas.setFrameShape(QFrame.Shape.Panel);
+        this.canvas.setFrameShape(QFrame.Shape.Panel);*/
 
         //поясняющие надписи
         this.descLabel = new QLabel(this);
@@ -104,7 +104,7 @@ public class Window extends QMainWindow {
 
     public void onButtonStepPressed(Boolean clicked) {
         int res = solution.run(graph, true);
-        this.canvas.redraw();
+        //this.canvas.redraw();
         if (res == -1) {
             this.resLabel.setText("Result (connected groups found): working...");
         } else {
@@ -116,7 +116,7 @@ public class Window extends QMainWindow {
 
     public void onButtonRunPressed(Boolean clicked) {
         int res = solution.run(graph, false);
-        this.canvas.redraw();
+        //this.canvas.redraw();
         this.resLabel.setText("Result (connected groups found): "+String.valueOf(res));
         buttonRun.setEnabled(false);
         buttonStep.setEnabled(false);
