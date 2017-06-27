@@ -37,7 +37,7 @@ public class InputOutput {
     public void printData(MyGraph Graph) throws IOException {
         cout.println(Graph.componentNum);
         for (int i = 0; i < Graph.numV; ++i) {
-             cout.print((Graph.component[i] + 1) + " ");
+            cout.print((Graph.component[i] + 1) + " ");
         }
         cout.println();
         cout.close();

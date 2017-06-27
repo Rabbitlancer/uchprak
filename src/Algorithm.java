@@ -72,7 +72,7 @@ public class Algorithm {
     }
 
     public int runCycle (MyGraph Graph, boolean onestep) {
-    //запускаем обход в глубину для расчета времени выхода каждой вершины
+        //запускаем обход в глубину для расчета времени выхода каждой вершины
         if (!state) {
             do {
                 dfs(v, Graph.IncidList);
@@ -101,7 +101,7 @@ public class Algorithm {
         }
         //запускаем поиск компонент сильной связности в порядке уменьшения времени выхода вершин
         return -1;
-        }
+    }
 }
 
 

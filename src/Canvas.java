@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
+    private Graphics content;
     public Canvas() {
     }
     public void paintComponent(Graphics g) {
@@ -12,6 +13,12 @@ public class Canvas extends JPanel {
         Color MyColor  = new Color(0,0,0);
         g.setColor(MyColor);
         g.drawOval(0, 0, width, height);
+    }
+
+    public void setContent(MyGraph data) {
+        //content = new VGraph(data);
+        //content.generateLayout();
+        //this.redraw();
     }
     public static void main(String args[]) {
         JFrame frame = new JFrame("Oval Sample");

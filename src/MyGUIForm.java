@@ -1,5 +1,18 @@
 import javax.swing.*;
 import java.awt.Graphics;
+import java.io.BufferedReader;
+import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.StringReader;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 //добавить: алгоритм! работу кнопок, вывод графа, ввод из файла
 
@@ -16,9 +29,9 @@ public class MyGUIForm extends JFrame{
 
     Graphics g;
 
-    //private InputOutput io;
-    //private Algorithm solution;
-    //private MyGraph graph;
+    private InputOutput io;
+    private Algorithm solution;
+    private MyGraph graph;
 
     private JPanel rootPanel;
 
@@ -36,7 +49,7 @@ public class MyGUIForm extends JFrame{
 
         JLabel label = new JLabel();
         label.setText("Graph data: ");
-        label.setBounds(12,12,64,12);
+        label.setBounds(12,12,80,12);
         label.setVisible(true);
 
         //кнопки управления
@@ -91,17 +104,62 @@ public class MyGUIForm extends JFrame{
         this.rootPanel.add(this.descLabel);
         this.rootPanel.add(this.resLabel);
 
+        buttonRun.setEnabled(false);
+        buttonStep.setEnabled(false);
+
         rootPanel.setVisible(true);
+
+        //открытие файла для чтения
+        buttonLoad.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fd = new JFileChooser();
+                int ret = fd.showDialog(null, "Открыть файл");
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    File file = fd.getSelectedFile();
+                    label.setText(file.getName());
+                }
+            }
+        });
+
+        //инициализация графа (ДОДЕЛАТЬ)!!!!!
+        buttonInit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                try {
+                    graph = new MyGraph();
+                    //graphEdit.getText();
+                    graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.getText())));
+                    canvas.setContent(graph);       //???? переписать метод canvas.setContent
+                    solution = new Algorithm();
+                    descLabel.setText("Description: algorithm initialized.");
+                    buttonRun.setEnabled(true);
+                    buttonStep.setEnabled(true);
+                    buttonLoad.setEnabled(false);
+                    buttonInit.setEnabled(false);
+                } catch (Exception e) {
+                    descLabel.setText("Description: exception! "+e.getClass().getName()+": "+e.getMessage());
+                }
+            }
+        });
 
         setVisible(true);   //для самого окна
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+
+
+
+    public void onButtonLoadPressed(Boolean clicked) {
+        JFileChooser fd = new JFileChooser();
+        int ret = fd.showDialog(null, "Открыть файл");
+        if (ret == JFileChooser.APPROVE_OPTION) {
+            File file = fd.getSelectedFile();
+
+        }
+    }
+
     public static void main(String[] args) {
         new MyGUIForm();
     }
 }
-
-
 
 /*
 import java.awt.Dimension;
