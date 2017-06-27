@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 public class MyGUIForm extends JFrame{
     private JLabel descLabel;
     private JLabel resLabel;
-    private JTextField graphEdit;
+    private JTextArea graphEdit;
     private JButton buttonLoad;
     private JButton buttonInit;
     private JButton buttonStep;
@@ -74,9 +74,9 @@ public class MyGUIForm extends JFrame{
         this.resLabel.setText("Result (connected groups found): -");
 
         //строка для указания кол-ва вершин
-        this.graphEdit = new JTextField("");
+        this.graphEdit = new JTextArea("");
         this.graphEdit.setBounds(12,32,128,144);
-        this.graphEdit.setText("2 2\n1 2\n2 1");        //sth strange
+        this.graphEdit.setText("2 2\n1 2\n2 1");
 
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
@@ -129,7 +129,6 @@ public class MyGUIForm extends JFrame{
             public void actionPerformed(ActionEvent ev) {
                 try {
                     graph = new MyGraph();
-                    //graphEdit.getText();
                     graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.getText())));
                     canvas.setContent(graph);       //???? переписать метод canvas.setContent
                     solution = new Algorithm();
