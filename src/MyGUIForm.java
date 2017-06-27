@@ -84,6 +84,9 @@ public class MyGUIForm extends JFrame{
         //что С ГРАФИКОЙ??????? вроде норм
 
         this.canvas.setVisible(true);
+
+        this.canvas.init();     //для примера вывода графа на canvas
+
         this.rootPanel.add(this.canvas);
 
         //устанавливаем виимость всех объектов

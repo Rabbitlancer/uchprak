@@ -62,6 +62,7 @@ public class JGraphAdapterDemo extends JApplet {
         g.addEdge( "v3", "v1" );
         g.addEdge( "v4", "v3" );
 
+        //тут что-то не работает
         // position vertices nicely within JGraph component
        /* positionVertexAt( "v1", 130, 40 );
         positionVertexAt( "v2", 60, 200 );
@@ -90,7 +91,7 @@ public class JGraphAdapterDemo extends JApplet {
         jg.setBackground( c );
     }
 
-
+//тут что-то не работает
    /* private void positionVertexAt( Object vertex, int x, int y ) {
         DefaultGraphCell cell = m_jgAdapter.getVertexCell( vertex );
         Map              attr = cell.getAttributes(  );
