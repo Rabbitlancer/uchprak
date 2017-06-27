@@ -1,3 +1,5 @@
+import com.sun.glass.ui.Size;
+
 import javax.swing.*;
 import java.awt.Graphics;
 import java.io.BufferedReader;
@@ -44,6 +46,7 @@ public class MyGUIForm extends JFrame{
         this.setTitle("Strongly-connected connectivity search. 5304tech (R)");
         this.rootPanel = new JPanel();
         rootPanel.setLayout(null);      //абсолютное позиционирование
+        rootPanel.setBounds(0,0,600,400);
 
         this.setBounds(100,100,450,400);
         setContentPane(rootPanel);
@@ -77,7 +80,8 @@ public class MyGUIForm extends JFrame{
         //строка для указания кол-ва вершин
         this.graphEdit = new JTextArea("");
         this.graphEdit.setBounds(12,32,128,144);
-        this.graphEdit.setText("2 2\n1 2\n2 1");
+        this.graphEdit.setAutoscrolls(true);
+        this.graphEdit.setText("8 10\n1 2\n2 3\n2 4\n3 4\n4 3\n4 5\n4 6\n6 7\n7 8\n8 6");
 
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
@@ -85,7 +89,6 @@ public class MyGUIForm extends JFrame{
         //что С ГРАФИКОЙ??????? вроде норм
 
         this.canvas.setVisible(true);
-
         this.canvas.init();     //для примера вывода графа на canvas
 
         this.rootPanel.add(this.canvas);
@@ -112,6 +115,8 @@ public class MyGUIForm extends JFrame{
         buttonStep.setEnabled(false);
 
         rootPanel.setVisible(true);
+
+        io = new InputOutput();
 
         //открытие файла для чтения
         buttonLoad.addActionListener(new ActionListener() {
@@ -143,7 +148,7 @@ public class MyGUIForm extends JFrame{
                 try {
                     graph = new MyGraph();
                     graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.getText())));
-                    canvas.setContent(graph);       //???? переписать метод canvas.setContent
+                    canvas.setContent(graph);
                     solution = new Algorithm();
                     descLabel.setText("Description: algorithm initialized.");
                     buttonRun.setEnabled(true);
@@ -152,6 +157,26 @@ public class MyGUIForm extends JFrame{
                     buttonInit.setEnabled(false);
                 } catch (Exception e) {
                     descLabel.setText("Description: exception! "+e.getClass().getName()+": "+e.getMessage());
+                }
+            }
+        });
+
+        //выполнение алгоритма
+        buttonStep.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                boolean lastState = solution.state;
+                int res = solution.run(graph, true);
+                if (solution.state ^ lastState) {
+                    canvas.setContent(graph.Transpose(graph));
+                }
+
+                if (res == -1) {
+                    canvas.select(solution.v);
+                } else {
+                    resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+                    buttonRun.setEnabled(false);
+                    buttonStep.setEnabled(false);
+                    canvas.select(-1);
                 }
             }
         });
