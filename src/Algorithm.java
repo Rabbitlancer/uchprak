@@ -7,7 +7,7 @@ public class Algorithm {
     //список инцидентности транспонированного орграфа (массив списков)
     private MyGraph GraphT;
     //массив для хранения информации о пройденных и не пройденных вершинах
-    private boolean usedV[];
+    public boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
     private ArrayList<Integer> topSort;
 

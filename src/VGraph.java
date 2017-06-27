@@ -1,5 +1,10 @@
+import javafx.scene.shape.Ellipse;
 import org.jgrapht.graph.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.lang.Math;
 
@@ -9,7 +14,7 @@ public class VGraph extends ListenableDirectedGraph {
         super(DefaultEdge.class);
 
         for (int i = 1; i<=original.numV; ++i) {
-            this.addVertex("v"+String.valueOf(i));
+            this.addVertex("v" + String.valueOf(i));
         }
 
         for (int i = 0; i<original.numV; ++i) {

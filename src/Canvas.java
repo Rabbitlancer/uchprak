@@ -1,5 +1,6 @@
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import javax.swing.*;
 import com.jgraph.layout.*;
 import com.jgraph.layout.organic.JGraphFastOrganicLayout;
 import com.mxgraph.util.mxConstants;
+import javafx.scene.shape.Ellipse;
 import org.jgraph.*;
 import org.jgraph.graph.*;
 import org.jgrapht.ext.JGraphModelAdapter;
@@ -64,7 +66,9 @@ public class Canvas extends  JApplet {
     public void setContent(MyGraph data) {
         content = new VGraph(data);
 
-        m_jgAdapter = new JGraphModelAdapter(content);
+        GraphConstants.setBounds(JGraphModelAdapter.createDefaultVertexAttributes(),new Rectangle2D.Double(-10,-10,10,10));
+
+        m_jgAdapter = new JGraphModelAdapter<>(content);
         jgraph = new JGraph(m_jgAdapter);
         jgraph.setBounds(0,0,428,300);
 
@@ -73,6 +77,17 @@ public class Canvas extends  JApplet {
         resize(DEFAULT_SIZE);
 
         jgraph.refresh();
+    }
+
+    //перекраска посещенных вершин
+    public void colorVisited(boolean[] visited, int num) {
+        for (int i = 0; i<num; ++i) {
+            if (visited[i]) {
+                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).getAttributes().replace(GraphConstants.BACKGROUND,Color.blue);
+            } else {
+                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).getAttributes().replace(GraphConstants.BACKGROUND,Color.cyan);
+            }
+        }
     }
 
     public void select(int id) {

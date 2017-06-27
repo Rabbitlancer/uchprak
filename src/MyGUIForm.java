@@ -1,7 +1,7 @@
 import com.sun.glass.ui.Size;
 
 import javax.swing.*;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -42,6 +42,8 @@ public class MyGUIForm extends JFrame{
         //setBounds(x, y, w, h) - указывает координаты верхней левой вершины окна, а также его ширину и высоту.
         //завершающие настройки
         this.setSize(600,400);
+        this.setResizable(false);
+        this.setMinimumSize(new Dimension(600,400));
         this.setTitle("Strongly-connected connectivity search. 5304tech (R)");
         this.rootPanel = new JPanel();
         rootPanel.setLayout(null);      //абсолютное позиционирование
@@ -85,10 +87,8 @@ public class MyGUIForm extends JFrame{
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
 
-        //что С ГРАФИКОЙ??????? вроде норм
-
         this.canvas.setVisible(true);
-        this.canvas.init();     //для примера вывода графа на canvas
+        this.canvas.init();
 
         this.rootPanel.add(this.canvas);
 
@@ -129,7 +129,7 @@ public class MyGUIForm extends JFrame{
             }
         });
 
-        //инициализация графа (ДОДЕЛАТЬ)!!!!!
+        //инициализация графа
         buttonInit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 try {
@@ -157,6 +157,10 @@ public class MyGUIForm extends JFrame{
                     canvas.setContent(graph.Transpose(graph));
                 }
 
+                if (solution.state) {
+                    canvas.colorVisited(solution.usedV,graph.numV);
+                }
+
                 if (res == -1) {
                     canvas.select(solution.v);
                 } else {
@@ -168,102 +172,20 @@ public class MyGUIForm extends JFrame{
             }
         });
 
+        buttonRun.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                int res = solution.run(graph, false);
+                resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+                buttonRun.setEnabled(false);
+                buttonStep.setEnabled(false);
+            }
+        });
+
         setVisible(true);   //для самого окна
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    }
-
-
-
-    public void onButtonLoadPressed(Boolean clicked) {
-        JFileChooser fd = new JFileChooser();
-        int ret = fd.showDialog(null, "Открыть файл");
-        if (ret == JFileChooser.APPROVE_OPTION) {
-            File file = fd.getSelectedFile();
-
-        }
     }
 
     public static void main(String[] args) {
         new MyGUIForm();
     }
 }
-
-/*
-import java.awt.Dimension;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
-        import javax.swing.AbstractButton;
-        import javax.swing.Icon;
-        import javax.swing.JButton;
-        import javax.swing.JFrame;
-        import javax.swing.JPanel;
-        import javax.swing.UIManager;
-public class MyGUIForm {
-    private JPanel panel;
-    public static void createGUI() {
-        //JFrame.setDefaultLookAndFeelDecorated(true);
-        JFrame frame = new JFrame("Test frame");
-
-        JPanel panel = new JPanel();
-
-       // Icon leftIcon = UIManager.getIcon("OptionPane.errorIcon");
-
-        JButton leftButton = new JButton("Enable");
-        leftButton.setVerticalTextPosition(AbstractButton.CENTER);
-        leftButton.setHorizontalTextPosition(AbstractButton.LEADING);
-      //  leftButton.setIcon(leftIcon);
-        panel.add(leftButton);
-
-        Icon centerIcon = UIManager.getIcon("OptionPane.informationIcon");
-
-        final JButton centerButton = new JButton("Center");
-        centerButton.setVerticalTextPosition(AbstractButton.BOTTOM);
-        centerButton.setHorizontalTextPosition(AbstractButton.CENTER);
-        centerButton.setIcon(centerIcon);
-        centerButton.setEnabled(false);
-        panel.add(centerButton);
-
-        centerButton.setPreferredSize(new Dimension(100, 100));
-
-        Icon rightIcon = UIManager.getIcon("OptionPane.questionIcon");
-
-        final JButton rightButton = new JButton("Disable");
-        rightButton.setIcon(rightIcon);
-        rightButton.setEnabled(false);
-        panel.add(rightButton);
-
-        leftButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                leftButton.setEnabled(false);
-                centerButton.setEnabled(true);
-                rightButton.setEnabled(true);
-            }
-        });
-
-        rightButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                leftButton.setEnabled(true);
-                centerButton.setEnabled(false);
-                rightButton.setEnabled(false);
-            }
-        });
-
-        frame.getContentPane().add(panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(350, 145));
-
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createGUI();
-            }
-        });
-    }
-}*/
