@@ -17,7 +17,7 @@ public class Canvas extends  JApplet {
     private JGraph jgraph;
 
     private static final Color     DEFAULT_BG_COLOR = Color.decode( "#FAFBFF" );
-    private static final Dimension DEFAULT_SIZE = new Dimension( 530, 320 );
+    private static final Dimension DEFAULT_SIZE = new Dimension( 428, 300 );
 
     private JGraphModelAdapter m_jgAdapter;
 
@@ -66,11 +66,13 @@ public class Canvas extends  JApplet {
 
         m_jgAdapter = new JGraphModelAdapter(content);
         jgraph = new JGraph(m_jgAdapter);
-        jgraph.setBounds(156,12,428,300);
+        jgraph.setBounds(0,0,428,300);
 
         adjustDisplaySettings();
         getContentPane().add(jgraph);
         resize(DEFAULT_SIZE);
+
+        jgraph.refresh();
     }
 
     public void select(int id) {
