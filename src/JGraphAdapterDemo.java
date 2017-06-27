@@ -1,3 +1,6 @@
+//пример с сайта http://jgrapht.org/visualizations.html
+
+//package org.jgrapht.demo;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,14 +21,14 @@ import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.ListenableDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-import java.awt.*;
-
-import javax.swing.JPanel;
-
-public class Canvas extends  JApplet {  //было extends JPanel
-
-    private Graphics content;
-
+/**
+ * A demo applet that shows how to use JGraph to visualize JGraphT graphs.
+ *
+ * @author Barak Naveh
+ *
+ * @since Aug 3, 2003
+ */
+public class JGraphAdapterDemo extends JApplet {
     private static final Color     DEFAULT_BG_COLOR = Color.decode( "#FAFBFF" );
     private static final Dimension DEFAULT_SIZE = new Dimension( 530, 320 );
 
@@ -61,7 +64,7 @@ public class Canvas extends  JApplet {  //было extends JPanel
 
         //тут что-то не работает
         // position vertices nicely within JGraph component
-     /*  positionVertexAt( "v1", 130, 40 );
+       /* positionVertexAt( "v1", 130, 40 );
         positionVertexAt( "v2", 60, 200 );
         positionVertexAt( "v3", 310, 230 );
         positionVertexAt( "v4", 380, 70 );*/
@@ -88,44 +91,16 @@ public class Canvas extends  JApplet {  //было extends JPanel
         jg.setBackground( c );
     }
 
-    //тут что-то не работает
-    /*private void positionVertexAt( Object vertex, int x, int y ) {
-        DefaultGraphCell cell = m_jgAdapter.getVertexCell(vertex);
-        Map attr = cell.getAttributes();
-        // Rectangle        b    = GraphConstants.getBounds( attr );
+//тут что-то не работает
+   /* private void positionVertexAt( Object vertex, int x, int y ) {
+        DefaultGraphCell cell = m_jgAdapter.getVertexCell( vertex );
+        Map              attr = cell.getAttributes(  );
+       // Rectangle        b    = GraphConstants.getBounds( attr );
 
-        GraphConstants.setBounds(attr, new Rectangle(x, y, b.width, b.height));
+        GraphConstants.setBounds( attr, new Rectangle( x, y, b.width, b.height ) );
 
-        Map cellAttr = new HashMap();
-        cellAttr.put(cell, attr);
-        // m_jgAdapter.edit( cellAttr, null, null, null, null );
-    }
-*/
-
-    public Canvas() {
-    }
-    //рисует овал
-    public void paintComponent(Graphics g) {
-        int width = getWidth();
-        int height = getHeight();
-        Color MyColor  = new Color(0,0,0);
-        g.setColor(MyColor);
-        g.drawOval(0, 0, width, height);
-    }
-
-    //ТУТ НАДО ПЕРЕПИСАТЬ ЭТОТ МЕТОД!!!!!!!!!!!!! можно просто сделать как в canvas.init()
-    public void setContent(MyGraph data) {
-        //content = new VGraph(data);
-        //content.generateLayout();
-        //this.redraw();
-    }
-
-    //по идее не нужно
-    public static void main(String args[]) {
-        JFrame frame = new JFrame("Oval Sample");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new Canvas());
-        frame.setSize(300, 200);
-        frame.setVisible(true);
-    }
+        Map cellAttr = new HashMap(  );
+        cellAttr.put( cell, attr );
+       // m_jgAdapter.edit( cellAttr, null, null, null, null );
+    }*/
 }
