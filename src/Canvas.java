@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.*;
@@ -17,6 +18,9 @@ import org.jgrapht.ext.JGraphModelAdapter;
 public class Canvas extends  JApplet {
     private VGraph content;
     private JGraph jgraph;
+    private Map<String,Hashtable> layoutMap;
+    private JGraphFacade facade;
+    private JGraphLayout layout;
 
     private static final Color     DEFAULT_BG_COLOR = Color.decode( "#FAFBFF" );
     private static final Dimension DEFAULT_SIZE = new Dimension( 428, 300 );
@@ -47,11 +51,11 @@ public class Canvas extends  JApplet {
         jgraph.setBackground( c );
 
         jgraph.setAutoResizeGraph(true);
-        JGraphFacade facade = new JGraphFacade(jgraph);
-        JGraphLayout layout = new JGraphFastOrganicLayout();
+        facade = new JGraphFacade(jgraph);
+        layout = new JGraphFastOrganicLayout();
         layout.run(facade);
-        Map nested = facade.createNestedMap(true,true);
-        jgraph.getGraphLayoutCache().edit(nested);
+        layoutMap = facade.createNestedMap(true,true);
+        jgraph.getGraphLayoutCache().edit(layoutMap);
 
         jgraph.setMoveable(false);
         jgraph.setSelectionEnabled(false);
@@ -81,13 +85,25 @@ public class Canvas extends  JApplet {
 
     //перекраска посещенных вершин
     public void colorVisited(boolean[] visited, int num) {
+        m_jgAdapter.beginUpdate();
         for (int i = 0; i<num; ++i) {
             if (visited[i]) {
-                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).getAttributes().replace(GraphConstants.BACKGROUND,Color.blue);
+                /*AttributeMap attr = new AttributeMap(1);
+                attr.put(GraphConstants.BACKGROUND,Color.blue);
+                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).setAttributes(attr);*/
+                //Hashtable cur = layoutMap.get("v"+String.valueOf(i+1));
+                Hashtable attr = JGraphModelAdapter.createDefaultVertexAttributes();
+                attr.replace(GraphConstants.BACKGROUND,Color.blue);
+                facade.setAttributes(new DefaultGraphCell("v"+String.valueOf(i+1)), attr);
+                //cur.replace("backgroundColor",Color.blue);
             } else {
-                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).getAttributes().replace(GraphConstants.BACKGROUND,Color.cyan);
+                m_jgAdapter.getVertexCell("v"+String.valueOf(i+1)).getAttributes().put(GraphConstants.BACKGROUND,Color.cyan);
             }
         }
+        layoutMap = facade.createNestedMap(true,true);
+        jgraph.getGraphLayoutCache().edit(layoutMap);
+        m_jgAdapter.endUpdate();
+        jgraph.refresh();
     }
 
     public void select(int id) {

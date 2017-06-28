@@ -157,7 +157,7 @@ public class MyGUIForm extends JFrame{
                     canvas.setContent(graph.Transpose(graph));
                 }
 
-                if (solution.state) {
+                if (!solution.state) {
                     canvas.colorVisited(solution.usedV,graph.numV);
                 }
 
