@@ -73,6 +73,7 @@ public class MyGUIForm extends JFrame{
         this.descLabel = new JLabel();
         this.descLabel.setBounds(156,300,428,48);
         this.descLabel.setText("Description: ");
+        this.descLabel.setAutoscrolls(true);
 
         this.resLabel = new JLabel();
         this.resLabel.setBounds(156,340,428,16);
@@ -86,9 +87,7 @@ public class MyGUIForm extends JFrame{
 
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
-
         this.canvas.setVisible(true);
-        this.canvas.init();
 
         this.rootPanel.add(this.canvas);
 
@@ -158,16 +157,16 @@ public class MyGUIForm extends JFrame{
                 }
 
                 if (!solution.state) {
-                    canvas.colorVisited(solution.usedV,graph.numV);
+                    //canvas.colorVisited(solution.usedV,graph.numV);
                 }
 
                 if (res == -1) {
-                    canvas.select(solution.v);
+                    //canvas.select(solution.v);
                 } else {
                     resLabel.setText("Result (connected groups found): "+String.valueOf(res));
                     buttonRun.setEnabled(false);
                     buttonStep.setEnabled(false);
-                    canvas.select(-1);
+                    //canvas.select(-1);
                 }
             }
         });
