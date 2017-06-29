@@ -217,6 +217,8 @@ public class MyGUIForm extends JFrame{
                 resLabel.setText("Result (connected groups found): "+String.valueOf(res));
                 buttonRun.setEnabled(false);
                 buttonStep.setEnabled(false);
+                buttonInit.setEnabled(true);
+                buttonLoad.setEnabled(true);
             }
         });
 
