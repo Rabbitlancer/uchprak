@@ -134,7 +134,8 @@ public class MyGUIForm extends JFrame{
                 try {
                     graph = new MyGraph();
                     graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.getText())));
-                    canvas.setContent(graph);
+                    canvas.setContent(graph.Transpose(graph));
+                    canvas.select(0);
                     solution = new Algorithm();
                     descLabel.setText("Description: algorithm initialized.");
                     buttonRun.setEnabled(true);
@@ -157,16 +158,18 @@ public class MyGUIForm extends JFrame{
                 }
 
                 if (!solution.state) {
-                    //canvas.colorVisited(solution.usedV,graph.numV);
+                    canvas.colorVisited(solution.usedV);
+                } else {
+                    canvas.colorComponents(graph.component);
                 }
+                canvas.select(solution.v);
 
                 if (res == -1) {
-                    //canvas.select(solution.v);
                 } else {
+                    canvas.colorComponents(graph.component);
                     resLabel.setText("Result (connected groups found): "+String.valueOf(res));
                     buttonRun.setEnabled(false);
                     buttonStep.setEnabled(false);
-                    //canvas.select(-1);
                 }
             }
         });

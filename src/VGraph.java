@@ -14,26 +14,31 @@ public class VGraph extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         for (HashMap<String,Object> e: edges) {
             g2d.draw((Line2D) e.get("component"));
-
+            Coord c1 = (Coord) e.get("posFrom");
+            Coord c2 = (Coord) e.get("posTo");
+            g.drawLine(c2.x, c2.y, c2.x+(c2.x-c1.x)/5, c2.y+(c2.y-c1.y)/5);
         }
 
         //Работа с цветом линии/фигуры
         // Запоминаем исходный цвет;
         Color oldColor = g.getColor();
-        // Создаём синий цвет;
-        Color newColor = new Color(0, 0, 0);    //любой цвет
-        // Устанавливаем новый цвет;
-        g.setColor(newColor);
         
         //рисование кружочков для вершин графа
         for (int i = 0; i<vertices.size(); ++i) {       //проходим по всем вершинам
-            Coord vertC = new Coord((Coord) vertices.get(i).get("pos"));    //координата вершины
-            g.drawOval(vertC.x-19,vertC.y-10,30,30);
+            Coord vertC = (Coord) vertices.get(i).get("pos");    //координата вершины
+
             //если надо закрасить кружочки:
-            //g.fillOval(vertC.x-19,vertC.y-10,30,30);
+            Color newColor = (Color) vertices.get(i).get("color");
+            // Устанавливаем новый цвет;
+            g.setColor(newColor);
+            g.fillOval(vertC.x-19,vertC.y-10,30,30);
+
+            // Восстанавливаем исходный цвет;
+            g.setColor(oldColor);
+            g.drawOval(vertC.x-19,vertC.y-10,30,30);
+
+            g.drawString((String) vertices.get(i).get("name"), vertC.x-10, vertC.y+10);
         }
-        // Восстанавливаем исходный цвет;
-        g.setColor(oldColor);
     }
 
     private void addVertex(String name) {
@@ -102,9 +107,18 @@ public class VGraph extends JPanel {
             if (toC.y>150) toC.y = toC.y - (int)b;
             else toC.y = toC.y + (int)b;
 
+            fromC.x -= 5;
+            fromC.y += 5;
+            toC.x -=5;
+            toC.y += 5;
+
             Line2D line = (Line2D) cur.get("component");
             line.setLine(fromC.x, fromC.y, toC.x, toC.y);
         }
+    }
+
+    public void recolor(int id, Color c) {
+        vertices.get(id).replace("color",c);
     }
 
     public VGraph(MyGraph original) {
