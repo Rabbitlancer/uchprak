@@ -73,7 +73,6 @@ public class MyGUIForm extends JFrame{
         this.descLabel = new JLabel();
         this.descLabel.setBounds(156,300,428,48);
         this.descLabel.setText("Description: ");
-        this.descLabel.setAutoscrolls(true);
 
         this.resLabel = new JLabel();
         this.resLabel.setBounds(156,340,428,16);
@@ -110,7 +109,6 @@ public class MyGUIForm extends JFrame{
         this.rootPanel.add(this.buttonRun);
         this.rootPanel.add(label);
         this.rootPanel.add(scroll);
-        //this.rootPanel.add(this.graphEdit);
         this.rootPanel.add(this.descLabel);
         this.rootPanel.add(this.resLabel);
 
