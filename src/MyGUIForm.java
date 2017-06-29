@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
+
+import java.io.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringReader;
@@ -123,10 +126,22 @@ public class MyGUIForm extends JFrame{
         buttonLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fd = new JFileChooser();
-                int ret = fd.showDialog(null, "Открыть файл");
+                int ret = fd.showDialog(null, "Open file");
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File file = fd.getSelectedFile();
-                    label.setText(file.getName());
+                    File file = fd.getSelectedFile();       //получение выбранного файла
+
+                    try(BufferedReader reader =new BufferedReader(new FileReader(file)))
+                    {
+                        // читаем из файла построчно
+                        String line;
+                        graphEdit.setText("");
+                        while ((line = reader.readLine()) != null) {
+                            graphEdit.append(line + "\n");
+                        }
+                    }
+                    catch(IOException ex){
+                        resLabel.setText(ex.getMessage());
+                    }
                 }
             }
         });
