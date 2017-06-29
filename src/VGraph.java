@@ -91,7 +91,12 @@ public class VGraph extends JPanel {
             v = vertexLookup((String) cur.get("to"));
             Coord toC = new Coord((Coord) v.get("pos"));
 
-            double con = (fromC.x - toC.x)/(fromC.y - toC.y);
+            double con;
+            if (fromC.y == toC.y) {
+                con = fromC.x - toC.x;
+            } else {
+                con = (fromC.x - toC.x)/(fromC.y - toC.y);
+            }
             double b = Math.sqrt(225/(Math.pow(con,2)+1));
             double a = Math.abs(con)*b;
 
