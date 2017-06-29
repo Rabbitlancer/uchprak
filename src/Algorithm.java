@@ -5,17 +5,18 @@ import java.util.Arrays;            //для работы с массивами
 public class Algorithm {
 
     //список инцидентности транспонированного орграфа (массив списков)
+    private MyGraph Graph;
     private MyGraph GraphT;
     //массив для хранения информации о пройденных и не пройденных вершинах
-    private boolean usedV[];
+    public boolean usedV[];
     //топологически упорядоченная перестановка номеров вершин графа
     private ArrayList<Integer> topSort;
 
     private boolean init = false;
-    private boolean state = false;
+    public boolean state = false;
     public int v;
-    public int myi;
-    private int componentID;
+    private int myi;
+    public int componentID;
 
     //обход в глубину
     private void dfs(int v, ArrayList<Integer>[] Graph) {
@@ -42,8 +43,8 @@ public class Algorithm {
         usedV[v] = true; //помечаем вершину как пройденную
         component[v] = componentID;
         //запускаем обход из всех вершин, смежных с вершиной v
-        for (int i = 0; i < GraphT.IncidList[v].size(); ++i) {
-            int w = GraphT.IncidList[v].get(i);
+        for (int i = 0; i < Graph.IncidList[v].size(); ++i) {
+            int w = Graph.IncidList[v].get(i);
             ccs(w, componentID,component); //вызов обхода в глубину от вершины w, смежной с вершиной v в транспонированном графе
         }
     }
@@ -52,12 +53,13 @@ public class Algorithm {
     //     System.out.println (list.contains("Картошка") + "");
 
     public int run(MyGraph Graph, boolean onestep) {
-        if (!init) runInit(Graph, onestep);
-        int res = runCycle(Graph,onestep);
+        this.Graph = Graph;
+        if (!init) runInit();
+        int res = runCycle(onestep);
         return res;
     }
 
-    public void runInit (MyGraph Graph, boolean onestep) {
+    public void runInit () {
         GraphT = Graph.Transpose(Graph);    //транспонируем граф
         //помечаем все вершины графа, как непосещенные
         usedV = new boolean[Graph.numV];
@@ -71,16 +73,16 @@ public class Algorithm {
         v=0;
     }
 
-    public int runCycle (MyGraph Graph, boolean onestep) {
+    public int runCycle (boolean onestep) {
         //запускаем обход в глубину для расчета времени выхода каждой вершины
         if (!state) {
             do {
-                dfs(v, Graph.IncidList);
+                dfs(v, GraphT.IncidList);
                 ++v;
             } while (!onestep && v < Graph.numV);
             if (v == Graph.numV) {
                 Arrays.fill(usedV, false);
-                componentID = 0;
+                componentID = 1;
                 state = true;
                 myi = topSort.size() - 1;
             }
@@ -95,7 +97,7 @@ public class Algorithm {
                 myi--;
             } while (!onestep && myi >= 0);
             if (myi == -1) {
-                int componentNum = componentID;
+                int componentNum = componentID-1;
                 return componentNum;        //!!!
             }
         }

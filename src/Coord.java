@@ -7,4 +7,9 @@ public class Coord {
         this.x = x;
         this.y = y;
     }
+
+    public Coord(Coord old) {
+        this.x = old.x;
+        this.y = old.y;
+    }
 }

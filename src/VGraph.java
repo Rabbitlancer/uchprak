@@ -1,90 +1,172 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Line2D;
 import java.util.*;
 import java.lang.Math;
 
 //объект, превращающий абстрактный граф в его плоскостное представление
-public class VGraph {
-    //константы сил визуализации
-    private static final double c1 = 2;
-    private static final double c2 = 1;
-    private static final double c3 = 1;
-    private static final double c4 = 0.1;
+public class VGraph extends JPanel {
+    public ArrayList<HashMap<String,Object>> vertices;
+    public ArrayList<HashMap<String,Object>> edges;
 
-    private int vertices;
-    private List<VGraphNode> nodes;
-    private Random rand;
+    public void paint(Graphics g) {
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
+        for (HashMap<String,Object> e: edges) {
+            g2d.draw((Line2D) e.get("component"));
+            Coord c1 = (Coord) e.get("posFrom");
+            Coord c2 = (Coord) e.get("posTo");
+
+            double angle = Math.atan2(c2.y - c1.y, c2.x-c1.x);
+            double x1 = -10;
+            double x2 = -10;
+            double y1 = -10;
+            double y2 = 10;
+
+            double fx1 = x1*Math.cos(angle) - y1*Math.sin(angle);
+            double fx2 = x2*Math.cos(angle) - y2*Math.sin(angle);
+            double fy1 = x1*Math.sin(angle) + y1*Math.cos(angle);
+            double fy2 = x2*Math.sin(angle) + y2*Math.cos(angle);
+
+            fx1 += c2.x;
+            fx2 += c2.x;
+            fy1 += c2.y;
+            fy2 += c2.y;
+
+            g2d.drawLine(c2.x, c2.y, (int) fx1, (int) fy1);
+            g2d.drawLine(c2.x, c2.y, (int) fx2, (int) fy2);
+        }
+
+        //Работа с цветом линии/фигуры
+        // Запоминаем исходный цвет;
+        Color oldColor = g.getColor();
+        
+        //рисование кружочков для вершин графа
+        for (int i = 0; i<vertices.size(); ++i) {       //проходим по всем вершинам
+            Coord vertC = (Coord) vertices.get(i).get("pos");    //координата вершины
+
+            //если надо закрасить кружочки:
+            Color newColor = (Color) vertices.get(i).get("color");
+            // Устанавливаем новый цвет;
+            g.setColor(newColor);
+            g.fillOval(vertC.x-19,vertC.y-10,30,30);
+
+            // Восстанавливаем исходный цвет;
+            g.setColor(oldColor);
+            g.drawOval(vertC.x-19,vertC.y-10,30,30);
+
+            g.drawString((String) vertices.get(i).get("name"), vertC.x-10, vertC.y+10);
+        }
+    }
+
+    private void addVertex(String name) {
+        HashMap<String, Object> vertex = new HashMap<>(5);
+        vertex.put("name", name);
+        vertex.put("color",Color.white);
+        vertex.put("selected",false);
+        vertex.put("pos", new Coord(0,0));
+        vertex.put("component", new JLabel());
+        vertices.add(vertex);
+    }
+
+    private void addEdge(String fromName, String toName) {
+        HashMap<String, Object> edge = new HashMap<>(5);
+        edge.put("from", fromName);
+        edge.put("to", toName);
+        edge.put("posFrom", new Coord(0,0));
+        edge.put("posTo", new Coord(0,0));
+        edge.put("component", new Line2D.Double(0,0,0,0));
+        edges.add(edge);
+    }
+
+    private HashMap<String,Object> vertexLookup(String name) {
+        for (int i = 0; i<vertices.size(); ++i) {
+            HashMap<String,Object> cur = vertices.get(i);
+            if (cur.get("name").equals(name)) return cur;
+        }
+
+        return null;
+    }
+
+    private void reposition() {
+        for (int i = 0; i<vertices.size(); ++i) {
+            HashMap<String,Object> cur = vertices.get(i);
+            Coord place = new Coord(214+(int)(130*Math.cos(6.28/vertices.size()*i)),150+(int)(130*Math.sin(6.28/vertices.size()*i)));
+            cur.replace("pos", place);
+            JLabel lbl = (JLabel) cur.get("component");
+            lbl.setText((String) cur.get("name"));
+            lbl.setBounds(place.x-10,place.y-10,30,30);
+            lbl.setVisible(true);
+            lbl.setBackground((Color) cur.get("color"));
+            this.add(lbl);
+        }
+
+        for (int i = 0; i<edges.size(); ++i) {
+            HashMap<String,Object> cur = edges.get(i);
+
+            HashMap<String,Object> v = vertexLookup((String) cur.get("from"));
+            Coord fromC = new Coord((Coord) v.get("pos"));
+            v = vertexLookup((String) cur.get("to"));
+            Coord toC = new Coord((Coord) v.get("pos"));
+
+            double con;
+            if (fromC.y == toC.y) {
+                con = fromC.x - toC.x;
+            } else {
+                con = (fromC.x - toC.x)/(fromC.y - toC.y);
+            }
+            double b = Math.sqrt(225/(Math.pow(con,2)+1));
+            double a = Math.abs(con)*b;
+
+            if (fromC.x>214) fromC.x = fromC.x - (int)a;
+            else fromC.x = fromC.x + (int)a;
+
+            if (fromC.y>150) fromC.y = fromC.y - (int)b;
+            else fromC.y = fromC.y + (int)b;
+
+            if (toC.x>214) toC.x = toC.x - (int)a;
+            else toC.x = toC.x + (int)a;
+
+            if (toC.y>150) toC.y = toC.y - (int)b;
+            else toC.y = toC.y + (int)b;
+
+            fromC.x -= 5;
+            fromC.y += 5;
+            toC.x -= 5;
+            toC.y += 5;
+
+            Line2D line = (Line2D) cur.get("component");
+            line.setLine(fromC.x, fromC.y, toC.x, toC.y);
+
+            cur.replace("posFrom",fromC);
+            cur.replace("posTo",toC);
+        }
+    }
+
+    public void recolor(int id, Color c) {
+        vertices.get(id).replace("color",c);
+    }
 
     public VGraph(MyGraph original) {
-        rand = new Random();
+        this.setBounds(0,0,428, 300);
+        this.setLayout(null);
 
-        this.vertices = original.numV;
-        nodes = new ArrayList<>(this.vertices);
-        for (int i = 0; i<this.vertices; ++i) {
-            int c = 0;
-            VGraphNode node = new VGraphNode();
-            for (int cur: original.IncidList[i]) {
-                ++c;
-                node.edges.add(cur);
-            }
-            node.connections = c;
-            nodes.add(node);
-        }
-    }
+        vertices = new ArrayList<>(original.numV);
+        edges = new ArrayList<>(original.numE);
 
-    //расчетная функция для расположения вершин графа
-    public void generateLayout() {
-        for (VGraphNode vertex: nodes) {
-            vertex.pos = new Coord(rand.nextInt(400), rand.nextInt(250));
+        for (int i = 1; i<=original.numV; ++i) {
+            this.addVertex("v" + String.valueOf(i));
         }
 
-        //расчет сил
-        for (int i = 0; i<100; ++i) {
-            Coord force = new Coord(0,0);
-            Double t;
-            for (VGraphNode vertex: nodes) {
-                for (VGraphNode other : nodes) {
-                    if (vertex != other) {
-                        if (vertex.isConnected(other)) {
-                            //логарифмическая пружина для соединенных вершин
-                            t = c1 * Math.log(Math.abs(vertex.pos.x - other.pos.x) / c2);
-                            force.x = t.intValue();
-                            t = c1 * Math.log(Math.abs(vertex.pos.y - other.pos.y) / c2);
-                            force.y = t.intValue();
-
-                            if (other.pos.x<vertex.pos.x) force.x*=-1;
-                            if (other.pos.y<vertex.pos.y) force.y*=-1;
-                        } else {
-                            //обратно пропорциональная сила для не соединенных
-                            t = c3 / (Math.pow(vertex.pos.x - other.pos.x, 2));
-                            force.x = t.intValue();
-                            t = c3 / (Math.pow(vertex.pos.y - other.pos.y, 2));
-                            force.y = t.intValue();
-
-                            if (other.pos.x>vertex.pos.x) force.x*=-1;
-                            if (other.pos.y>vertex.pos.y) force.y*=-1;
-                        }
-                    }
-                }
-                //инкрементация сил
-                t = c4*force.x;
-                vertex.pos.x += t.intValue();
-                t = c4*force.y;
-                vertex.pos.y += t.intValue();
-
-                //ограничение по размеру отрисовки
-                if (vertex.pos.x<0) vertex.pos.x = 0;
-                if (vertex.pos.x>428) vertex.pos.x = 428;
-                if (vertex.pos.y<0) vertex.pos.y = 0;
-                if (vertex.pos.y>300) vertex.pos.y = 300;
+        for (int i = 0; i<original.numV; ++i) {
+            for (int j = 0; j<original.IncidList[i].size(); ++j) {
+                this.addEdge("v"+String.valueOf(i+1), "v"+String.valueOf(original.IncidList[i].get(j)+1));
             }
         }
-    }
 
-    public List<Coord> getCoord() {
-        List<Coord> res = new ArrayList<>(vertices);
+        reposition();
 
-        for (VGraphNode vertex: nodes) {
-            res.add(vertex.pos);
-        }
-        return res;
+        this.revalidate();
+        this.repaint();
     }
 }

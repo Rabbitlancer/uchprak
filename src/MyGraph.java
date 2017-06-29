@@ -10,6 +10,8 @@ public class MyGraph {
     // метод транспонирования графа
     public MyGraph Transpose(MyGraph Graph){
         MyGraph GraphT = new MyGraph();
+        GraphT.numV = this.numV;
+        GraphT.numE = this.numE;
         GraphT.IncidList = new ArrayList[Graph.numV];
         for (int i = 0; i < Graph.numV; ++i) {
             GraphT.IncidList[i] = new ArrayList<Integer>();       //создали транспонированный граф (пустой)

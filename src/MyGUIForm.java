@@ -1,5 +1,7 @@
+import com.sun.glass.ui.Size;
+
 import javax.swing.*;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -19,7 +21,7 @@ import javax.swing.JPanel;
 public class MyGUIForm extends JFrame{
     private JLabel descLabel;
     private JLabel resLabel;
-    private JTextField graphEdit;
+    private JTextArea graphEdit;
     private JButton buttonLoad;
     private JButton buttonInit;
     private JButton buttonStep;
@@ -40,9 +42,12 @@ public class MyGUIForm extends JFrame{
         //setBounds(x, y, w, h) - указывает координаты верхней левой вершины окна, а также его ширину и высоту.
         //завершающие настройки
         this.setSize(600,400);
+        this.setResizable(false);
+        this.setMinimumSize(new Dimension(600,400));
         this.setTitle("Strongly-connected connectivity search. 5304tech (R)");
         this.rootPanel = new JPanel();
         rootPanel.setLayout(null);      //абсолютное позиционирование
+        rootPanel.setBounds(0,0,600,400);
 
         this.setBounds(100,100,450,400);
         setContentPane(rootPanel);
@@ -74,18 +79,17 @@ public class MyGUIForm extends JFrame{
         this.resLabel.setText("Result (connected groups found): -");
 
         //строка для указания кол-ва вершин
-        this.graphEdit = new JTextField("");
-        this.graphEdit.setBounds(12,32,128,144);
-        this.graphEdit.setText("2 2\n1 2\n2 1");        //sth strange
+        this.graphEdit = new JTextArea("");
+        this.graphEdit.setBounds(12,32,128,14400);
+        this.graphEdit.setText("8 10\n1 2\n2 3\n2 4\n3 4\n4 3\n4 5\n4 6\n6 7\n7 8\n8 6");
+        JScrollPane scroll = new JScrollPane(graphEdit);
+        scroll.setBounds(12,32,128,144);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
-
-        //что С ГРАФИКОЙ??????? вроде норм
-
         this.canvas.setVisible(true);
-
-        this.canvas.init();     //для примера вывода графа на canvas
 
         this.rootPanel.add(this.canvas);
 
@@ -96,6 +100,7 @@ public class MyGUIForm extends JFrame{
         this.buttonRun.setVisible(true);
         this.descLabel.setVisible(true);
         this.resLabel.setVisible(true);
+        scroll.setVisible(true);
 
         //добавляем объекты на панель
         this.rootPanel.add(this.buttonLoad);
@@ -103,7 +108,7 @@ public class MyGUIForm extends JFrame{
         this.rootPanel.add(this.buttonStep);
         this.rootPanel.add(this.buttonRun);
         this.rootPanel.add(label);
-        this.rootPanel.add(this.graphEdit);
+        this.rootPanel.add(scroll);
         this.rootPanel.add(this.descLabel);
         this.rootPanel.add(this.resLabel);
 
@@ -111,6 +116,8 @@ public class MyGUIForm extends JFrame{
         buttonStep.setEnabled(false);
 
         rootPanel.setVisible(true);
+
+        io = new InputOutput();
 
         //открытие файла для чтения
         buttonLoad.addActionListener(new ActionListener() {
@@ -124,16 +131,17 @@ public class MyGUIForm extends JFrame{
             }
         });
 
-        //инициализация графа (ДОДЕЛАТЬ)!!!!!
+        //инициализация графа
         buttonInit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 try {
                     graph = new MyGraph();
-                    //graphEdit.getText();
                     graph = io.getData(graph, new BufferedReader(new StringReader(graphEdit.getText())));
-                    canvas.setContent(graph);       //???? переписать метод canvas.setContent
+                    canvas.setContent(graph.Transpose(graph));
+                    canvas.select(0);
                     solution = new Algorithm();
                     descLabel.setText("Description: algorithm initialized.");
+                    resLabel.setText("Result (connected groups found): -");
                     buttonRun.setEnabled(true);
                     buttonStep.setEnabled(true);
                     buttonLoad.setEnabled(false);
@@ -144,102 +152,64 @@ public class MyGUIForm extends JFrame{
             }
         });
 
+        //выполнение алгоритма
+        buttonStep.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                boolean lastState = solution.state;
+                int res = solution.run(graph, true);
+                if (solution.state ^ lastState) {
+                    canvas.setContent(graph);
+                }
+
+                if (!solution.state) {
+                    canvas.colorVisited(solution.usedV);
+                } else {
+                    canvas.colorComponents(graph.component);
+                }
+                canvas.select(solution.v);
+
+                if (res == -1) {
+                    String str = "Description: ";
+                    str += "next vertex: v";
+                    str += String.valueOf(solution.v+1);
+                    str += "; ";
+                    if (solution.state ^ lastState) {
+                        str += "graph transposed.";
+                    } else if (!solution.state) {
+                        str += "performing DFS...";
+                    } else {
+                        str += "will detect component #";
+                        str += String.valueOf(solution.componentID);
+                    }
+
+                    descLabel.setText(str);
+                } else {
+                    canvas.colorComponents(graph.component);
+                    descLabel.setText("Description: algorithm finished.");
+                    resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+                    buttonRun.setEnabled(false);
+                    buttonStep.setEnabled(false);
+                    buttonInit.setEnabled(true);
+                    buttonLoad.setEnabled(true);
+                }
+            }
+        });
+
+        buttonRun.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                int res = solution.run(graph, false);
+                descLabel.setText("Description: skip description.");
+                resLabel.setText("Result (connected groups found): "+String.valueOf(res));
+                buttonRun.setEnabled(false);
+                buttonStep.setEnabled(false);
+            }
+        });
+
         setVisible(true);   //для самого окна
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    }
-
-
-
-    public void onButtonLoadPressed(Boolean clicked) {
-        JFileChooser fd = new JFileChooser();
-        int ret = fd.showDialog(null, "Открыть файл");
-        if (ret == JFileChooser.APPROVE_OPTION) {
-            File file = fd.getSelectedFile();
-
-        }
     }
 
     public static void main(String[] args) {
         new MyGUIForm();
     }
 }
-
-/*
-import java.awt.Dimension;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
-        import javax.swing.AbstractButton;
-        import javax.swing.Icon;
-        import javax.swing.JButton;
-        import javax.swing.JFrame;
-        import javax.swing.JPanel;
-        import javax.swing.UIManager;
-public class MyGUIForm {
-    private JPanel panel;
-    public static void createGUI() {
-        //JFrame.setDefaultLookAndFeelDecorated(true);
-        JFrame frame = new JFrame("Test frame");
-
-        JPanel panel = new JPanel();
-
-       // Icon leftIcon = UIManager.getIcon("OptionPane.errorIcon");
-
-        JButton leftButton = new JButton("Enable");
-        leftButton.setVerticalTextPosition(AbstractButton.CENTER);
-        leftButton.setHorizontalTextPosition(AbstractButton.LEADING);
-      //  leftButton.setIcon(leftIcon);
-        panel.add(leftButton);
-
-        Icon centerIcon = UIManager.getIcon("OptionPane.informationIcon");
-
-        final JButton centerButton = new JButton("Center");
-        centerButton.setVerticalTextPosition(AbstractButton.BOTTOM);
-        centerButton.setHorizontalTextPosition(AbstractButton.CENTER);
-        centerButton.setIcon(centerIcon);
-        centerButton.setEnabled(false);
-        panel.add(centerButton);
-
-        centerButton.setPreferredSize(new Dimension(100, 100));
-
-        Icon rightIcon = UIManager.getIcon("OptionPane.questionIcon");
-
-        final JButton rightButton = new JButton("Disable");
-        rightButton.setIcon(rightIcon);
-        rightButton.setEnabled(false);
-        panel.add(rightButton);
-
-        leftButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                leftButton.setEnabled(false);
-                centerButton.setEnabled(true);
-                rightButton.setEnabled(true);
-            }
-        });
-
-        rightButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                leftButton.setEnabled(true);
-                centerButton.setEnabled(false);
-                rightButton.setEnabled(false);
-            }
-        });
-
-        frame.getContentPane().add(panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(350, 145));
-
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createGUI();
-            }
-        });
-    }
-}*/
