@@ -14,7 +14,26 @@ public class VGraph extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         for (HashMap<String,Object> e: edges) {
             g2d.draw((Line2D) e.get("component"));
+
         }
+
+        //Работа с цветом линии/фигуры
+        // Запоминаем исходный цвет;
+        Color oldColor = g.getColor();
+        // Создаём синий цвет;
+        Color newColor = new Color(0, 0, 0);    //любой цвет
+        // Устанавливаем новый цвет;
+        g.setColor(newColor);
+        
+        //рисование кружочков для вершин графа
+        for (int i = 0; i<vertices.size(); ++i) {       //проходим по всем вершинам
+            Coord vertC = new Coord((Coord) vertices.get(i).get("pos"));    //координата вершины
+            g.drawOval(vertC.x-19,vertC.y-10,30,30);
+            //если надо закрасить кружочки:
+            //g.fillOval(vertC.x-19,vertC.y-10,30,30);
+        }
+        // Восстанавливаем исходный цвет;
+        g.setColor(oldColor);
     }
 
     private void addVertex(String name) {
