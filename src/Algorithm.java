@@ -15,8 +15,8 @@ public class Algorithm {
     private boolean init = false;
     public boolean state = false;
     public int v;
-    public int myi;
-    private int componentID;
+    private int myi;
+    public int componentID;
 
     //обход в глубину
     private void dfs(int v, ArrayList<Integer>[] Graph) {

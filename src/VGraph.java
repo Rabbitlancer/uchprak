@@ -16,7 +16,25 @@ public class VGraph extends JPanel {
             g2d.draw((Line2D) e.get("component"));
             Coord c1 = (Coord) e.get("posFrom");
             Coord c2 = (Coord) e.get("posTo");
-            g.drawLine(c2.x, c2.y, c2.x+(c2.x-c1.x)/5, c2.y+(c2.y-c1.y)/5);
+
+            double angle = Math.atan2(c2.y - c1.y, c2.x-c1.x);
+            double x1 = -10;
+            double x2 = -10;
+            double y1 = -10;
+            double y2 = 10;
+
+            double fx1 = x1*Math.cos(angle) - y1*Math.sin(angle);
+            double fx2 = x2*Math.cos(angle) - y2*Math.sin(angle);
+            double fy1 = x1*Math.sin(angle) + y1*Math.cos(angle);
+            double fy2 = x2*Math.sin(angle) + y2*Math.cos(angle);
+
+            fx1 += c2.x;
+            fx2 += c2.x;
+            fy1 += c2.y;
+            fy2 += c2.y;
+
+            g2d.drawLine(c2.x, c2.y, (int) fx1, (int) fy1);
+            g2d.drawLine(c2.x, c2.y, (int) fx2, (int) fy2);
         }
 
         //Работа с цветом линии/фигуры
@@ -114,11 +132,14 @@ public class VGraph extends JPanel {
 
             fromC.x -= 5;
             fromC.y += 5;
-            toC.x -=5;
+            toC.x -= 5;
             toC.y += 5;
 
             Line2D line = (Line2D) cur.get("component");
             line.setLine(fromC.x, fromC.y, toC.x, toC.y);
+
+            cur.replace("posFrom",fromC);
+            cur.replace("posTo",toC);
         }
     }
 

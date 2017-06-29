@@ -13,6 +13,7 @@ public class Canvas extends  JPanel {
 
     //конструктор
     public Canvas() {
+        content = null;
         this.setLayout(null);
     }
 
@@ -39,6 +40,9 @@ public class Canvas extends  JPanel {
 
     //обновление содержимого
     public void setContent(MyGraph data) {
+        if (content != null) {
+            content.setVisible(false);
+        }
         content = new VGraph(data);
         this.add(content);
         this.revalidate();

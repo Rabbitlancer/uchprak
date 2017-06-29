@@ -81,9 +81,12 @@ public class MyGUIForm extends JFrame{
 
         //строка для указания кол-ва вершин
         this.graphEdit = new JTextArea("");
-        this.graphEdit.setBounds(12,32,128,144);
-        this.graphEdit.setAutoscrolls(true);
+        this.graphEdit.setBounds(12,32,128,14400);
         this.graphEdit.setText("8 10\n1 2\n2 3\n2 4\n3 4\n4 3\n4 5\n4 6\n6 7\n7 8\n8 6");
+        JScrollPane scroll = new JScrollPane(graphEdit);
+        scroll.setBounds(12,32,128,144);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.canvas = new Canvas();
         this.canvas.setBounds(156,12,428,300);
@@ -98,6 +101,7 @@ public class MyGUIForm extends JFrame{
         this.buttonRun.setVisible(true);
         this.descLabel.setVisible(true);
         this.resLabel.setVisible(true);
+        scroll.setVisible(true);
 
         //добавляем объекты на панель
         this.rootPanel.add(this.buttonLoad);
@@ -105,7 +109,8 @@ public class MyGUIForm extends JFrame{
         this.rootPanel.add(this.buttonStep);
         this.rootPanel.add(this.buttonRun);
         this.rootPanel.add(label);
-        this.rootPanel.add(this.graphEdit);
+        this.rootPanel.add(scroll);
+        //this.rootPanel.add(this.graphEdit);
         this.rootPanel.add(this.descLabel);
         this.rootPanel.add(this.resLabel);
 
@@ -138,6 +143,7 @@ public class MyGUIForm extends JFrame{
                     canvas.select(0);
                     solution = new Algorithm();
                     descLabel.setText("Description: algorithm initialized.");
+                    resLabel.setText("Result (connected groups found): -");
                     buttonRun.setEnabled(true);
                     buttonStep.setEnabled(true);
                     buttonLoad.setEnabled(false);
@@ -154,7 +160,7 @@ public class MyGUIForm extends JFrame{
                 boolean lastState = solution.state;
                 int res = solution.run(graph, true);
                 if (solution.state ^ lastState) {
-                    canvas.setContent(graph.Transpose(graph));
+                    canvas.setContent(graph);
                 }
 
                 if (!solution.state) {
@@ -165,11 +171,28 @@ public class MyGUIForm extends JFrame{
                 canvas.select(solution.v);
 
                 if (res == -1) {
+                    String str = "Description: ";
+                    str += "next vertex: v";
+                    str += String.valueOf(solution.v+1);
+                    str += "; ";
+                    if (solution.state ^ lastState) {
+                        str += "graph transposed.";
+                    } else if (!solution.state) {
+                        str += "performing DFS...";
+                    } else {
+                        str += "will detect component #";
+                        str += String.valueOf(solution.componentID);
+                    }
+
+                    descLabel.setText(str);
                 } else {
                     canvas.colorComponents(graph.component);
+                    descLabel.setText("Description: algorithm finished.");
                     resLabel.setText("Result (connected groups found): "+String.valueOf(res));
                     buttonRun.setEnabled(false);
                     buttonStep.setEnabled(false);
+                    buttonInit.setEnabled(true);
+                    buttonLoad.setEnabled(true);
                 }
             }
         });
@@ -177,6 +200,7 @@ public class MyGUIForm extends JFrame{
         buttonRun.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 int res = solution.run(graph, false);
+                descLabel.setText("Description: skip description.");
                 resLabel.setText("Result (connected groups found): "+String.valueOf(res));
                 buttonRun.setEnabled(false);
                 buttonStep.setEnabled(false);
